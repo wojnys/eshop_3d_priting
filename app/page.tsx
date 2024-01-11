@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 
+
 function Home() {
     return (
         <section className={"section-container"}>
