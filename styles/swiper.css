@@ -55,3 +55,11 @@
 .swiper-slide:nth-child(10n) {
     background-color: rgb(54, 94, 77);
 }
+
+@media screen and (max-width: 900px) {
+    .swiper {
+        width: 220px;
+        height: 220px;
+        text-align: center;
+    }
+}

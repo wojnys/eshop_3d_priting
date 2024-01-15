@@ -20,3 +20,40 @@
 .img-settings{
     width: 30%;
 }
+/*w-full flex items-center justify-center lg:flex-row sm:flex-col sm:bg-fuchsia-400 sm:flex-col-reverse'*/
+.introduction-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+@media screen and (max-width: 900px) {
+    .introduction-container {
+        display: flex;
+        flex-direction: column-reverse;
+        height: 100vh;
+        justify-content: center;
+    }
+    .image-part {
+        position: relative;
+        width: 100%;
+        height: 50vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .text-part{
+        font-size: 20px;
+        width:100%;
+        height: 50vh;
+        display: flex;
+        justify-content: end;
+
+    }
+
+    .btn-primary, .btn-secondary {
+        font-size: 14px;
+    }
+}

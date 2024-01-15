@@ -15,7 +15,7 @@ import { EffectCards } from 'swiper/modules';
 function Introduction() {
     return (
         <section className={"section-container"}>
-            <div className={'w-full flex items-center justify-center'}>
+            <div className={'introduction-container'}>
                 <div className={"image-part "}>
                     <Swiper
                         effect={'cards'}
@@ -35,10 +35,10 @@ function Introduction() {
                     </Swiper>
                 </div>
                 <div className={"text-part p-2"}>
-                    <h1 className={"text-xl text-left"}>
+                    <h1 className={"text-lg text-left md:text-lg lg:text-xl"}>
                         Vytvořte si vlastní LED barevná texty, neonové nápisy, klíčenky, čí podarujte své milé originální dárečkem.
                     </h1>
-                    <p>Pro více infomrací přejděte zde</p>
+                    <p className={"text-sm"}>Pro více infomrací přejděte zde</p>
                     <div>
                         <button className={"btn btn-primary w-100 mt-2 m-2"}>Přejít do eshopu</button>
                         <button className={"btn btn-secondary w-100 mt-2"}>Navrhnout vlastní</button>
