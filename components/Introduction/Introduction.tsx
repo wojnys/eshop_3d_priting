@@ -35,18 +35,18 @@ function Introduction() {
                     </Swiper>
                 </div>
                 <div className={"text-part p-2"}>
-                    <h1 className={"text-lg text-left md:text-lg lg:text-xl"}>
+                    <h1 className={"text-blg text-left md:text-lg lg:text-xl"}>
                         Vytvořte si vlastní LED barevná texty, neonové nápisy, klíčenky, čí podarujte své milé originální dárečkem.
                     </h1>
                     <p className={"text-sm"}>Pro více infomrací přejděte zde</p>
                     <div>
-                        <button className={"btn btn-primary w-100 mt-2 m-2"}>Přejít do eshopu</button>
-                        <button className={"btn btn-secondary w-100 mt-2"}>Navrhnout vlastní</button>
+                        <button className={"btn btn-primary w-100 mt-2 m-2"}>Eshop</button>
+                        <button className={"btn btn-secondary w-100 mt-2"}>Vlastní návrh</button>
                     </div>
                 </div>
             </div>
         </section>
-    );
+    );;
 }
 
 export default Introduction;

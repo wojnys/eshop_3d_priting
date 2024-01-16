@@ -30,8 +30,9 @@ module.exports = {
   theme: {
     fontSize: {
       sm: ['14px', '20px'],
-      base: ['16px', '24px'],
-      lg: ['20px', '28px'],
+      base: ['20px', '28px'],
+      blg: ['26px', '34px'],
+      lg: ['30px', '38px'],
       xl: ['40px', '48px'],
     },
     extend: {
