@@ -1,30 +1,70 @@
-import React from 'react';
+"use client";
+import React, {useState} from 'react';
 import './OwnUserDesgin.css'
 import '@styles/swiper.css';
-import {FaCheck} from "react-icons/fa";
+import Data from './OfferProductsData';
 
-function OwnUserDesign() {
+const OwnUserDesign = () => {
+    const [products, setProducts] = useState(Data)
+
+    console.log(products)
     return (
-        <section className={"section-container own-design-page"}>
-            <div className={"top-part"}>
-                <img src={"https://vastpFaBarshotos.com/files/uploads/photos/11060/very-high-resolution-forest-photo-m.jpg?v=20220712073521"} className={'top-image'} alt={""}/>
-                <div className="information-card">
-                    <div className={'text-lg pl-5 pt-3 italic font-bold'}>
-                        Vytvorte si produkt dle vlastni fantazie
-                    </div>
-                    <div className={"pt-5 pl-5"}>
-                        <ul>
-                            <li className={'flex flex-row items-center'}><FaCheck className={"mr-2"}/>LED NAPISY</li>
-                            <li className={'flex flex-row items-center'}><FaCheck className={"mr-2"}/>KLicenky</li>
-                            <li className={'flex flex-row items-center'}><FaCheck className={"mr-2"}/>Neon NAPISY</li>
-                            <li className={'flex flex-row items-center'}><FaCheck className={"mr-2"}/>Hracky</li>
-                        </ul>
-                    </div>
-                    <button className={'btn-primary w-48 ml-5 mt-5'}>ANo mam zajem</button>
+        <section className={"section-container-secondary own-design-page flex flex-col"}>
+            <h1 className={"title text-white text-xl font-bold relative mb-5"}>Co nabízíme</h1>
+
+
+            {/*{ products.map((product, index: number) => (*/}
+            {/*    <div className={`first-product flex flex-col lg:flex ${index % 2 == 0 ? 'lg:flex-row-reversed' : 'lg:flex-row' } justify-start items-center w-full pt-5`} key={index}>*/}
+            {/*        <div>*/}
+            {/*            <img src={product.image}*/}
+            {/*                 width={"700"} height={"500"} alt={"img"} className={"rounded-lg"}/>*/}
+            {/*        </div>*/}
+            {/*        <div className={"flex flex-col m-5 lg:w-96"}>*/}
+            {/*            <h1 className={"text-xl relative top-2 text-white font-bold pb-3"}>{product.title}</h1>*/}
+            {/*            <p className={'text-md text-white pb-3'}>{product.description}</p>*/}
+            {/*            <button className={"btn-primary w-64"}>Prejit do Eshopu</button>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*)) }*/}
+
+
+            <div className="first-product flex flex-col lg:flex lg:flex-row justify-start items-center w-full pt-5">
+                <div>
+                    <img src={"https://img.freepik.com/premium-vector/product-text-effect-editable_214084-498.jpg"}
+                         width={"700"} height={"500"} alt={"img"} className={"rounded-lg"}/>
+                </div>
+                <div className={"flex flex-col m-5 lg:w-96"}>
+                    <h1 className={"text-xl relative top-2 text-white font-bold pb-3"}>Klicenky pro kazdeho </h1>
+                    <p className={'text-md text-white pb-3'}>Moznost vlastniho navrhu klicenky, popripade si muzete
+                        vybrat z naseho eshopu</p>
+                    <button className={"btn-primary w-64"}>Prejit do Eshopu</button>
                 </div>
             </div>
-            <div className="products">
-                products
+
+            <div
+                className="first-product flex flex-col lg:flex lg:flex-row-reverse justify-start items-center w-full pt-5">
+                <div>
+                    <img src={"https://img.freepik.com/premium-vector/product-text-effect-editable_214084-498.jpg"}
+                         width={"700"} height={"500"} alt={"img"}/>
+                </div>
+                <div className={"flex flex-col m-5 lg:w-96"}>
+                    <h1 className={"text-xl relative top-2 text-white font-bold pb-3"}>LED texty na pohodu </h1>
+                    <p className={'text-md text-white pb-3'}>Moznost vlastniho navrhu klicenky, popripade si muzete
+                        vybrat z naseho eshopu</p>
+                    <button className={"btn-primary w-64"}>Prejit do Eshopu</button>
+                </div>
+            </div>
+            <div className="first-product flex flex-col lg:flex lg:flex-row justify-start items-center w-full pt-5">
+                <div>
+                    <img src={"https://img.freepik.com/premium-vector/product-text-effect-editable_214084-498.jpg"}
+                         width={"700"} height={"500"} alt={"img"}/>
+                </div>
+                <div className={"flex flex-col m-5"}>
+                    <h1 className={"text-xl relative top-2 text-white font-bold pb-3"}>Neony do firmy</h1>
+                    <p className={'text-md text-white pb-3'}>Moznost vlastniho navrhu klicenky, popripade si muzete
+                        vybrat z naseho eshopu</p>
+                    <button className={"btn-primary w-64"}>Prejit do Eshopu</button>
+                </div>
             </div>
         </section>
     );
