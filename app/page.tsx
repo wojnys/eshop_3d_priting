@@ -2,14 +2,16 @@
 
 import Image from "next/image";
 import Introduction from "@components/Introduction/Introduction";
-import OwnUserDesign from "@components/OwnUserDesgin/OwnUserDesign";
+import OfferProducts from "@components/Offers/OfferProducts";
+import FavouriteProducts from "@components/FavouriteProducts/FavouriteProducts";
 
 
 function Home() {
     return (
         <>
             <Introduction />
-            <OwnUserDesign />
+            <OfferProducts />
+            <FavouriteProducts />
         </>
     );
 }

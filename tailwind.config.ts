@@ -47,6 +47,12 @@ module.exports = {
         secondary:{
           DEFAULT: '#000066',
         },
+        thirdly:{
+          DEFAULT: '#0074B7',
+        },
+        fourthly:{
+          DEFAULT: '#75E6DA',
+        },
       }
     },
 
