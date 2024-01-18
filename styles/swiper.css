@@ -1,6 +1,6 @@
 .swiper {
-    width: 420px;
-    height: 420px;
+    width: 400px;
+    height: 520px;
     text-align: center;
 }
 
@@ -59,14 +59,7 @@
 @media screen and (max-width: 900px) {
     .swiper {
         width: 300px;
-        height: 300px;
-        text-align: center;
-    }
-}
-@media screen and (max-width: 600px) {
-    .swiper {
-        width: 200px;
-        height: 200px;
+        height: 400px;
         text-align: center;
     }
 }

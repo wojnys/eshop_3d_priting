@@ -1,14 +1,3 @@
-.image-part {
-    width: 500px;
-}
-.text-part{
-    width: 600px;
-    text-align: left;
-}
-
-.img-settings{
-    width: 30%;
-}
 /*w-full flex items-center justify-center lg:flex-row sm:flex-col sm:bg-fuchsia-400 sm:flex-col-reverse'*/
 .introduction-container {
     display: flex;
@@ -19,6 +8,7 @@
     flex-wrap: wrap;
 }
 
+
 @media screen and (max-width: 900px) {
     .introduction-container .btn-primary, .introduction-container .btn-secondary {
         font-size: 14px;
@@ -27,9 +17,3 @@
     }
 }
 
-@media screen and (max-width: 700px) {
-    .section-container .introduction-pag{
-       height: 110vh;
-        background-color: red;
-    }
-}

@@ -42,12 +42,12 @@ const Navbar = () => {
     ];
 
     return (
-        <div className="flex justify-center items-center w-full h-20 px-4 text-white bg-white fixed nav z-50 relative">
+        <div className={`flex justify-center items-center w-11/12 m-auto mt-3 h-20 px-4 rounded-3xl text-white bg-secondary fixed nav z-50 ${!nav ? `relative` : `w-full`} `}>
             <ul className="hidden md:flex">
                 {links.map(({ id, link , name}) => (
                     <li
                         key={id}
-                        className="nav-links px-4 cursor-pointer capitalize font-medium text-gray-500"
+                        className="nav-links px-4 cursor-pointer capitalize font-medium text-white"
                     >
                         <Link href={link}>{name}</Link>
                     </li>
@@ -59,15 +59,15 @@ const Navbar = () => {
                 className="cursor-pointer pr-4 z-10 text-black-500 md:hidden"
                 style={{position:"absolute",right:"40px", top:"30px", color:"black"}}
             >
-                {nav ? <FaTimes size={30} /> : <FaBars size={30}/>}
+                {nav ? <FaTimes size={30} color={"white"} /> : <FaBars size={30} color={"white"}/>}
             </div>
 
             {nav && (
-                <ul className="flex flex-col justify-center items-center absolute top-0 left-0 w-full h-screen bg-gradient-to-b bg-white text-black">
+                <ul className="flex flex-col justify-center items-center absolute top-0 left-0 w-full h-screen mb-10 bg-gradient-to-b bg-secondary rounded-3xl text-black">
                     {links.map(({ id, link, name }) => (
                         <li
                             key={id}
-                            className="px-4 cursor-pointer capitalize py-6 text-2xl"
+                            className="px-4 cursor-pointer capitalize py-6 text-2xl text-white"
                         >
                             <Link onClick={() => setNav(!nav)} href={link}>
                                 {name}

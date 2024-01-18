@@ -4,6 +4,7 @@ import Image from "next/image";
 import Introduction from "@components/Introduction/Introduction";
 import OfferProducts from "@components/Offers/OfferProducts";
 import FavouriteProducts from "@components/FavouriteProducts/FavouriteProducts";
+import Configurator from "@components/Configurator/Configurator";
 
 
 function Home() {
@@ -12,6 +13,7 @@ function Home() {
             <Introduction />
             <OfferProducts />
             <FavouriteProducts />
+            <Configurator />
         </>
     );
 }
