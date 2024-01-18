@@ -46,6 +46,7 @@ module.exports = {
         },
         secondary:{
           DEFAULT: '#000066',
+          800: 'rgba(0, 0, 102, 0.8)',
         },
         thirdly:{
           DEFAULT: '#0074B7',
