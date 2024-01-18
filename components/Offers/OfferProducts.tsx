@@ -19,7 +19,7 @@ const OfferProducts = () => {
                              width={"600"} height={"500"} alt={"img"} className={"rounded-lg"}/>
                     </div>
                     <div className={"flex flex-col m-5 lg:w-96"}>
-                        <h1 className={"text-lg relative top-2 text-white font-bold pb-3"}>{product.title}</h1>
+                        <h1 className={"text-blg relative top-2 text-white font-bold pb-3"}>{product.title}</h1>
                         <p className={'text-md text-white pb-3'}>{product.description}</p>
                         <button className={"btn-primary w-64"}>Prejit do Eshopu</button>
                     </div>

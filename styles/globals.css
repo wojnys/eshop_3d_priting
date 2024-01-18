@@ -47,7 +47,8 @@ body {
     font-size: 40px;
     font-weight: bold;
     position: relative;
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
+    text-align: center;
 }
 .page-title:after {
     content: "";
