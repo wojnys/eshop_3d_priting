@@ -18,13 +18,14 @@ import {Autoplay, Pagination, Navigation} from 'swiper/modules';
 
 // import required modules
 import {EffectCards} from 'swiper/modules';
-import {FaCube, FaKey, FaLightbulb} from "@node_modules/react-icons/fa";
+import {FaBolt, FaChild, FaCube, FaKey, FaLightbulb} from "@node_modules/react-icons/fa";
+import {FaK} from "@node_modules/react-icons/fa6";
 
 
 function Introduction() {
     return (
         <section
-            className={"section-container-no-flex items-center w-full introduction-page md:h-screen flex-col flex md:flex-row md:justify-evenly md:items-start"}>
+            className={"section-container-no-flex items-center justify-center w-full introduction-page lg:h-screen flex-col flex lg:flex-row lg:justify-evenly lg:items-start"}>
             <div className={"text-part flex flex-col flex-wrap"}>
                 <div className={"md:w-3/4"}>
                     <h1 className={"text-blg md:text-lg lg:text-xl"}>
@@ -35,31 +36,35 @@ function Introduction() {
                 <div className={"flex flex-row"}>
                     <button className={"btn btn-secondary w-100 "}>Vlastní návrh</button>
                 </div>
-                <div className={"flex justify-center mt-4 w-full flex-wrap md:justify-start"}>
+                <div className={"flex justify-center mt-4 w-full flex-wrap lg:justify-start"}>
                     <div
-                        className={"w-32 md:w-32 h-32 text-center flex justify-center flex-col items-center bg-secondary"}>
-                        <div className={'p-2'}><FaCube size={"30"} color={"white"}/></div>
-                        <h4 className={"text-white"}>3D Tisk</h4>
+                        className={"w-1/2 sm:w-1/3 sm:h-64 text-center flex justify-center flex-col items-center bg-secondary p-2"}>
+                        <div className={'p-2'}><FaKey size={"30"} color={"white"}/></div>
+                        <h4 className={"text-white font-bold sm:text-base"}>Klíčenky</h4>
+                        <p className={"text-white text-sm/[15px]"}>Tvorba klíčenek z platu či kovu</p>
                     </div>
                     <div
-                        className={"w-32 md:w-32 h-32 text-center flex justify-center flex-col items-center bg-thirdly"}>
+                        className={"w-1/2 sm:w-1/2 sm:h-64 text-center flex justify-center flex-col items-center bg-thirdly p-2"}>
                         <div className={'p-2'}><FaCube size={"30"} color={"white"}/></div>
-                        <h4 className={"text-white"}>LED Napisy</h4>
+                        <h4 className={"text-white font-bold sm:text-base"}>3D TISK</h4>
+                        <p className={"text-white text-sm/[15px]"}>3D Tisk pro kohokoliv</p>
                     </div>
                     <div
-                        className={"w-32 md:w-32 h-32 text-center flex justify-center flex-col items-center bg-fourthly"}>
-                        <div className={'p-2'}><FaCube size={"30"} color={"white"}/></div>
-                        <h4 className={"text-white"}>LED Napisy</h4>
+                        className={"w-1/2 sm:w-1/2 sm:h-64 text-center flex justify-center flex-col items-center bg-fourthly p-2"}>
+                        <div className={'p-2'}><FaBolt size={"30"} color={"white"}/></div>
+                        <h4 className={"text-white font-bold text-sm sm:text-base"}>LED/Neonové nápisy</h4>
+                        <p className={"text-white text-sm/[15px]"}>Osvětlete si svůj pokoj nebo dům</p>
                     </div>
                     <div
-                        className={"w-32 md:w-32 h-32 text-center flex justify-center flex-col items-center bg-primary"}>
-                        <div className={'p-2'}><FaCube size={"30"} color={"white"}/></div>
-                        <h4 className={"text-white"}>LED Napisy</h4>
+                        className={"w-1/2 sm:w-1/3 sm:h-64 text-center flex justify-center flex-col items-center bg-primary p-2"}>
+                        <div className={'p-2'}><FaChild size={"30"} color={"white"}/></div>
+                        <h4 className={"text-white sm:text-base font-bold"}>Hračky pro děti</h4>
+                        <p className={"text-white text-sm/[15px]"}>Uděletje radost vašemu děťátku </p>
                     </div>
                 </div>
             </div>
 
-            <div className={"eshop-part pt-4"}>
+            <div className={"eshop-part pt-4 flex items-center h-full"}>
                 <div className={"card flex justify-center flex-col items-center"}><Swiper
                     spaceBetween={30}
                     centeredSlides={true}
@@ -91,9 +96,9 @@ function Introduction() {
                 </Swiper>
                     <div className={"w-full flex justify-between items-center"}>
                         <div className={"flex flex-col p-4"}>
-                            <h3 className={"text-black"}>dwdw</h3>
+                            <h3 className={"text-black"}>Úkazkové produkty</h3>
                         </div>
-                        <button className={"btn-primary w-40  mr-4"}>Přejít do eshopu</button>
+                        <button className={"text-sm sm:text-sm/[30px] btn-primary w-40 mr-4"}>Přejít do eshopu</button>
                     </div>
                 </div>
             </div>
