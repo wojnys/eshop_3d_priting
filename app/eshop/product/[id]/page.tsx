@@ -23,8 +23,7 @@ export default async function Page(
     const product = await getProduct(id);
 
     const cart = await getCart();
-    console.log("cardddd")
-    console.log(cart);
+
     return (
         <section className={"section-container-no-flex"}>
           <h1 className={"font-bold text-lg"}>{product.name}</h1>
