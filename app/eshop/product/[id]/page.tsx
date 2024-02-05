@@ -4,6 +4,7 @@ import {cache} from "react";
 import AddToCartButton from "@app/eshop/product/[id]/AddToCartButton";
 import {incrementProductQuantity} from "@app/eshop/product/[id]/actions";
 import {formatPrice} from "@utils/helper";
+import {getCart} from "@app/lib/db/cart";
 
 interface ProductPageProps {
     params: {
@@ -20,6 +21,10 @@ export default async function Page(
     {params:{id}}: ProductPageProps
 )   {
     const product = await getProduct(id);
+
+    const cart = await getCart();
+    console.log("cardddd")
+    console.log(cart);
     return (
         <section className={"section-container-no-flex"}>
           <h1 className={"font-bold text-lg"}>{product.name}</h1>

@@ -23,7 +23,7 @@ export default async function Card({product}: ProductCardProps) {
                         <AddToCartButton productId={id} incrementProductQuantity={incrementProductQuantity} />
                     </div>
                     <div className="px-2 py-3 text-wrap text-sm">
-                        <p>{description}</p>
+                        <p className={"line-clamp-3"}>{description}</p>
                     </div>
                 </div>
             </div>
