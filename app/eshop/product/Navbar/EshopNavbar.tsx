@@ -1,4 +1,3 @@
-
 import {redirect} from "@node_modules/next/dist/client/components/redirect";
 import {getCart} from "@app/lib/db/cart";
 import ShoppingCartButton from "@app/eshop/product/Navbar/ShoppingCartButton";
@@ -7,13 +6,12 @@ const searchProducts = async (formData: FormData) => {
     'use server';
 
     const searchQuery = formData.get('searchQuery')?.toString();
-    if(searchQuery) {
+    if (searchQuery) {
         redirect("/search?query=" + searchQuery);
     }
-
 }
 
-export default async  function EshopNavbar() {
+export default async function EshopNavbar() {
 
     const cart = await getCart();
 
@@ -31,13 +29,7 @@ export default async  function EshopNavbar() {
                         </div>
                     </form>
                 </div>
-                <ShoppingCartButton cart={cart} />
-                {/*<div className={"flex flex-row"}>*/}
-                {/*    <div className={""}>*/}
-                {/*        <ShoppingCartButton cart={cart}/>*/}
-                {/*    </div>*/}
-                {/*    <span className={'relative bottom-2 rounded-full bg-red-300 w-5 h-5 text-center'} style={{fontSize:"12px", lineHeight:"21px"}}> {cart?.size ?? 0 } </span>*/}
-                {/*</div>*/}
+                <ShoppingCartButton cart={cart}/>
             </div>
         </div>
     )

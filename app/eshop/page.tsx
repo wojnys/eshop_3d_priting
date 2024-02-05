@@ -10,7 +10,6 @@ export default async function Page() {
     });
     return (
         <div>
-            <EshopNavbar />
             <div className={'flex flex-wrap gap-2 m-2 justify-center'}>
                 {
                     products.map((product) =>

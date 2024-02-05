@@ -26,7 +26,6 @@ function AddToCartButton({productId, incrementProductQuantity}: AddToCartButtonP
                 <FaShoppingCart className={"ml-2"}/>
             </button>
             {isPending && <span className={"loading loading-spinner-small"}></span>}
-            {/*{!isPending && success && <span className={"text-green-500"}>Přidáno do košíku</span>}*/}
         </div>
     );
 }

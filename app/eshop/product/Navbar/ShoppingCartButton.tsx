@@ -1,33 +1,3 @@
-// import {ShoppingCart} from "@app/lib/db/cart";
-// import {FaShoppingCart} from "@node_modules/react-icons/fa";
-// import DropdownMenu from "@app/eshop/product/Navbar/DropDown";
-//
-// interface ShoppingCartButtonProps {
-//     cart: ShoppingCart | null;
-//
-// }
-//
-// function ShoppingCartButton({cart}: ShoppingCartButtonProps) {
-//     return (
-//         <div className={"dropdown dropdown-end"}>
-//             <label tabIndex={0} className={"btn btn-ghost btn-circle btn"}>
-//                 <div className={"indicator flex flex-row"}>
-//                     <div className={""}>
-//                         <FaShoppingCart className={"text-2xl"} color={"white"} size={"25"}/>
-//                     </div>
-//                     <span className={'relative bottom-2 rounded-full bg-red-300 w-5 h-5 text-center'}
-//                           style={{fontSize: "12px", lineHeight: "21px"}}> {cart?.size ?? 0} </span>
-//                 </div>
-//             </label>
-//
-//             <DropdownMenu />
-//
-//         </div>
-//     );
-// }
-//
-// export default ShoppingCartButton;
-
 
 'use client';
 import {Fragment} from 'react';
@@ -38,7 +8,6 @@ import Link from "next/link";
 
 interface ShoppingCartButtonProps {
     cart: ShoppingCart | null;
-
 }
 
 function classNames(...classes: string[]) {
@@ -87,7 +56,7 @@ export default function ShoppingCartButton({cart}: ShoppingCartButtonProps) {
                                 </a>
                             )}
                         </Menu.Item>
-                        <button className={"btn-primary w-32"}><Link href={'/'}>Zobrazit </Link></button>
+                        <button className={"btn-primary w-32"}><Link href={'/eshop/cart'}>Zobrazit</Link></button>
                     </div>
                 </Menu.Items>
             </Transition>
