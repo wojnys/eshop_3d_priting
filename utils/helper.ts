@@ -2,7 +2,7 @@
 let CZKPrice = new Intl.NumberFormat('cs-CS', {
     style: 'currency',
     currency: 'CZK',
-    maximumSignificantDigits: 1,
+    maximumSignificantDigits: 10,
 });
 
 export const formatPrice = (price: number) => {

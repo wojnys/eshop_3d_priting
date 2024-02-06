@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Contains products infomration
 model Product {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   description String
@@ -14,12 +15,26 @@ model Product {
   name        String
   price       Int
   CartItem    CartItem[]
+  Stock       Stock[]
 
   // createAt    DateTime @default(now())
   // updateAt    DateTime @updatedAt
   @@map("products")
 }
 
+// Contains products stock information
+model Stock {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int
+
+  // createAt    DateTime @default(now())
+  // updateAt    DateTime @updatedAt
+  @@map("stocks")
+}
+
+// Contains cart information about user actual order
 model Cart {
   id    String     @id @default(auto()) @map("_id") @db.ObjectId
   items CartItem[]
@@ -29,6 +44,7 @@ model Cart {
   @@map("carts")
 }
 
+// Contains one cart item from cart of actual user order
 model CartItem {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   productId String  @db.ObjectId
