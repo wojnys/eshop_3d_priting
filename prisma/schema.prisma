@@ -36,8 +36,12 @@ model Stock {
 
 // Contains cart information about user actual order
 model Cart {
-  id    String     @id @default(auto()) @map("_id") @db.ObjectId
-  items CartItem[]
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  items             CartItem[]
+  wasOrderCompleted Boolean    @default(false) // if user completed the order (he creates order and fill all information about delivery and payment)
+  wasOrderPaid      Boolean    @default(false) // if user paid for the order
+  wasOrderDelivered Boolean    @default(false) // if user received the order
+  User              User[]
 
   // createAt    DateTime @default(now())
   // updateAt    DateTime @updatedAt
@@ -56,4 +60,61 @@ model CartItem {
   // createAt    DateTime @default(now())
   // updateAt    DateTime @updatedAt
   @@map("cartitems")
+}
+
+model User {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  firstname       String
+  lastname        String
+  email           String
+  phone           Int
+  cartId          String        @db.ObjectId
+  cart            Cart          @relation(fields: [cartId], references: [id])
+  paymentTypeId   String        @db.ObjectId
+  paymentType     PaymentType   @relation(fields: [paymentTypeId], references: [id])
+  transportInfoId String        @db.ObjectId
+  transportInfo   TransportInfo @relation(fields: [transportInfoId], references: [id])
+
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model TransportInfo {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  address         String
+  city            String
+  zip             Int
+  TransportType   TransportType? @relation(fields: [transportTypeId], references: [id])
+  transportTypeId String?        @db.ObjectId
+  User            User[]
+
+  @@map("transportinfo")
+}
+
+model TransportType {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  numberId      Int
+  name          String
+  company       String
+  price         Int
+  TransportInfo TransportInfo[]
+
+  // createAt DateTime @default(now())
+  // updateAt DateTime @updatedAt
+  @@map("transporttype")
+}
+
+model PaymentType {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  numberId Int
+  name     String
+  company  String
+  price    Int
+  User     User[]
+
+  // createAt    DateTime @default(now())
+  // updateAt    DateTime @updatedAt
+  @@map("paymenttype")
 }

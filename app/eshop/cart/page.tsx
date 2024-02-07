@@ -12,14 +12,17 @@ export default async function CartPage() {
     if ((cart !== null)) {
         priceOverall = cart.items.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
     }
+
+    console.log(cart?.items.length)
+
     return (
         <>
             {
-                cart?.items.length !== 0 &&  <InfoNavbar/>
+                cart?.items.length !== 0 || cart === null &&  <InfoNavbar/>
             }
             <div className={'p-5'}>
                 {
-                    cart?.items.length === 0 ? (
+                    cart?.items.length === 0 || undefined || cart === null ? (
                         <h1 className={"text-lg text-center"}>Váš košík je prázdný</h1>
                     ) : (
                         <>
@@ -35,7 +38,7 @@ export default async function CartPage() {
                             <div className={"flex flex-col items-center m-4"}>
                                 <h1 className={"text-[20px]"}>Celkem k úhradě: <strong
                                     className={"text-[26px]"}>{formatPrice(priceOverall)}</strong></h1>
-                                <Link className={"btn-primary w-56 text-center"} href={"/eshop/cart/contact-info"}>Vytvořit
+                                <Link className={"btn-primary w-56 text-center"} href={"/eshop/cart/payment-info"}>Vytvořit
                                     objednávku</Link>
                             </div>
                         </>

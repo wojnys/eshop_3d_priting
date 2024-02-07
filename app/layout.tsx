@@ -17,8 +17,8 @@ function RootLayout({children} : {children: ReactNode}) {
                 </div>
 
                 <main className="app">
-                    <EshopNavbar />
-                    {children}
+                        <EshopNavbar />
+                        {children}
                 </main>
             </body>
         </html>

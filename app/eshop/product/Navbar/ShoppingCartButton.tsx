@@ -47,7 +47,7 @@ export default function ShoppingCartButton({cart}: ShoppingCartButtonProps) {
                     <Menu.Items
                         className="absolute right-0 z-10 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         {
-                            cart?.size === 0 ? (
+                            cart?.size === 0 || cart === null ? (
                                 <>
                                     <p className={"m-3 p-3"}>Váš košík je prázdný</p>
                                 </>
