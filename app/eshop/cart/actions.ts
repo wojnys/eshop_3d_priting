@@ -46,6 +46,8 @@ export async function setProductQuantity(productId: string, quantity: number) {
 
 export async function createOrder(formData: FormData, transportId: string | null, paymentId: string | null): Promise<{error?: string[], success?:string}> {
 
+    const cart = await getCart();
+
     const firstname = formData.get("firstname")?.toString();
     const lastname = formData.get("lastname")?.toString();
     const email = formData.get("email")?.toString();
@@ -117,7 +119,7 @@ export async function createOrder(formData: FormData, transportId: string | null
             // Update order
             await prisma.cart.update({
                 where: { id: localCartId },
-                data: { wasOrderCompleted: true}
+                data: { wasOrderCompleted: true, cartPrice: cart?.subtotal }
             })
 
             cookies().delete('localCartId');

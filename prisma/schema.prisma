@@ -37,14 +37,16 @@ model Stock {
 // Contains cart information about user actual order
 model Cart {
   id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  cartPrice         Int        @default(0) // sum of all products in cart
   items             CartItem[]
   wasOrderCompleted Boolean    @default(false) // if user completed the order (he creates order and fill all information about delivery and payment)
   wasOrderPaid      Boolean    @default(false) // if user paid for the order
   wasOrderDelivered Boolean    @default(false) // if user received the order
   User              User[]
 
-  // createAt    DateTime @default(now())
-  // updateAt    DateTime @updatedAt
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
   @@map("carts")
 }
 
@@ -55,7 +57,7 @@ model CartItem {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity  Int
   cartId    String  @db.ObjectId
-  cart      Cart    @relation(fields: [cartId], references: [id])
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
 
   // createAt    DateTime @default(now())
   // updateAt    DateTime @updatedAt
@@ -82,12 +84,12 @@ model User {
 }
 
 model TransportInfo {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
   address         String
   city            String
   zip             Int
-  TransportType   TransportType? @relation(fields: [transportTypeId], references: [id])
-  transportTypeId String?        @db.ObjectId
+  transportType   TransportType @relation(fields: [transportTypeId], references: [id])
+  transportTypeId String        @db.ObjectId
   User            User[]
 
   @@map("transportinfo")

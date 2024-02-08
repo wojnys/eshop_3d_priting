@@ -18,7 +18,7 @@ export type ShoppingCart = CartWithProducts & {
 export async function getCart(): Promise <ShoppingCart | null> {
     const localCartId = cookies().get('localCartId')?.value;
     const cart = localCartId ? await prisma.cart.findUnique({
-        where: {id: localCartId},
+        where: {id: localCartId, wasOrderCompleted: false}, // Only orders which are not completed are possible to change
         include: {items: {include: {product: true}}}
     }) : null;
     if (!cart) {
@@ -38,7 +38,7 @@ export async function createCart(): Promise<ShoppingCart> {
     })
 
     // Cookie of cart.id need encryption, it is dangerous to keep id of cart non encrypted
-    cookies().set('localCartId', newCart.id);
+    cookies().set('localCartId', newCart.id)
 
     return {
         ...newCart,

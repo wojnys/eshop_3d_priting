@@ -1,27 +1,31 @@
 import '@styles/globals.css'
-import { ReactNode } from 'react';
+import {ReactNode} from 'react';
 import {Metadata} from "@node_modules/next";
 import EshopNavbar from "@app/eshop/product/Navbar/EshopNavbar";
+import {ClerkProvider} from "@clerk/nextjs";
+import Link from "next/link";
 
 export const metadata: Metadata = {
     title: 'LED/Neonové texty či výrobky na míru',
     description: 'Tisk všech 3D produktů na míru '
 }
 
-function RootLayout({children} : {children: ReactNode}) {
+function RootLayout({children}: { children: ReactNode }) {
     return (
-        <html lang={'cs'}>
+        <ClerkProvider>
+            <html lang={'cs'}>
             <body>
-                <div className="main">
-                    <div className={'gradient'}></div>
-                </div>
+            <div className="main">
+                <div className={'gradient'}></div>
+            </div>
 
-                <main className="app">
-                        <EshopNavbar />
-                        {children}
-                </main>
+            <main className="app">
+                <EshopNavbar/>
+                {children}
+            </main>
             </body>
-        </html>
+            </html>
+        </ClerkProvider>
     );
 }
 
