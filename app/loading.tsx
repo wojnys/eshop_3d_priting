@@ -1,3 +1,6 @@
+import {ClipLoader} from "react-spinners";
+import Loading from "@components/Loading";
+
 export default function LoadingPage() {
-    return <span>Data se nacitaji ...</span>
+    return <Loading />
 }

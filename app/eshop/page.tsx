@@ -23,7 +23,7 @@ export default async function Page({searchParams: {page = "1" }}: HomeProps) {
     });
     return (
         <div>
-            <div className={'flex flex-wrap gap-2 m-2 justify-center'}>
+            <div className={'flex flex-wrap gap-2 m-2 justify-center m-auto w-9/12'}>
                 {
                     products.map((product) =>
                         <Card product={product}/>

@@ -12,11 +12,11 @@ export default async function Card({product}: ProductCardProps) {
     const {id, description, imageUrl, name, price} = product;
     return (
         <div className={''}>
-            <div key={id} className={"card w-50 h-70 flex justify-center flex-col items-center "}
+            <div key={id} className={"card w-50 h-70 flex justify-center flex-col items-center my-4"}
                  style={{width: "300px"}}>
                 <Link href={'/eshop/product/' + id} className={'w-full'}>
                     <img src={imageUrl}
-                         alt={"img"} className={"w-full rounded-lg h-60"}/>
+                         alt={"img"} className={"w-full rounded-lg h-96"}/>
                 </Link>
                 <div className={"w-full flex-col justify-between items-center"}>
                     <div className={"px-2 py-3 w-full"}>
