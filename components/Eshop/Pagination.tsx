@@ -21,7 +21,7 @@ export default function Pagination({currentPage, totalPages, category}: Paginati
         )
     }
   return (
-    <div className={"flex justify-center mt-8 "}>
+    <div className={"flex justify-center mt-8 mb-7"}>
         <nav aria-label="Page navigation example" >
             <ul className="inline-flex -space-x-px text-sm">
                 {numberedPageItems}

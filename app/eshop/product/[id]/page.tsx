@@ -57,7 +57,7 @@ export default async function Page(
                 <div className="text-w-full md:text-w-1/2">
                     <h1 className={"font-bold text-lg md:text-left text-left"}>{product.name}</h1>
                     <p className={"text-base"}>{product.title}</p>
-                    <p className={"text-[23px] pt-3"}>{formatPrice(product.price)}</p>
+                    <p className={"text-[23px] pt-3"}>{formatPrice(product.price)} s DPH</p>
                     <p className={`${productStockQuantity ? "text-green-600" : "text-red-500"} `}>
                         {
                             productStockQuantity === null ? (
@@ -77,10 +77,10 @@ export default async function Page(
 
                     <AddToCartButton productId={product.id} incrementProductQuantity={incrementProductQuantity}/>
                 </div>
-                <div className={"w-full text-left flex flex-col"}>
+                <div className={"w-full text-left flex flex-col mt-6"}>
                     <div className={"w-full"}>
                         <div className={"border-2 border-slate-700 w-1/5"}></div>
-                        <div className={"border-2 border-slate-200 w-4/5"}
+                        <div className={"border-2 border-slate-200  w-4/5"}
                              style={{position: "relative", left: "20%", top: "-4px"}}></div>
                     </div>
                     <h3 className={"mb-3 font-bold text-base"}>Popis produktu</h3>
