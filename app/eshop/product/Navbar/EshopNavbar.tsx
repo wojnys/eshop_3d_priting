@@ -17,8 +17,6 @@ export default async  function EshopNavbar() {
 
     const cart = await getCart();
 
-    // const {user, isLoaded} = useUser();
-
     return (
         <div className={'bg-primary h-20 w-full '}>
             <div className="navbar w-11/12 m-auto flex-row gap-2 flex justify-between items-center h-full">

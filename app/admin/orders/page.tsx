@@ -41,7 +41,7 @@ interface Order {
     };
 }
 
-export default async function Page() {
+export default function Page() {
 
     const [loading, setLoading] = useState<boolean>(true);
     const [orders, setOrders] = useState<Order[]>([]);
@@ -113,7 +113,7 @@ export default async function Page() {
                         <h1 className={"text-xl p-5"}>Objednávky</h1>
                         <div className={"w-full flex justify-center my-5"}>
                             <Link
-                                className={`${searchParams.get('filter') == "all" ? "bg-gray-600 text-white" : "bg-gray-200 text-black"} inline-block rounded-full px-3 py-1 text-base font-semibold text-gray-700 mr-2 mb-2 ml-2 `}
+                                className={`${searchParams.get('filter') == "all" || searchParams.get('filter') === null ? "bg-gray-600 text-white" : "bg-gray-200 text-black"} inline-block rounded-full px-3 py-1 text-base font-semibold text-gray-700 mr-2 mb-2 ml-2 `}
                                 href={"/admin/orders?filter=all"}>
                                 Všechny objednávky
                             </Link>
@@ -130,6 +130,13 @@ export default async function Page() {
                         </div>
 
                         <div className={"flex flex-wrap gap-3"}>
+                            {
+                                filteredOrders.length === 0 && (
+                                    <div className={"m-auto"}>
+                                        <h1 className={"text-center text-lg"}>Žádné objednávky</h1>
+                                    </div>
+                                )
+                            }
                             {
                                 filteredOrders.map((order, index) => (
                                     <div className="max-w-sm rounded overflow-hidden shadow-lg w-96" key={index}>

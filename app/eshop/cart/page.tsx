@@ -13,8 +13,6 @@ export default async function CartPage() {
         priceOverall = cart.items.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
     }
 
-    console.log(cart?.items.length)
-
     return (
         <>
             {

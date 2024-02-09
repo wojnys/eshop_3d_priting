@@ -7,15 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Category {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  type     String
+  products Product[]
+
+  // createAt    DateTime @default(now())
+  // updateAt    DateTime @updatedAt
+  @@map("categories")
+}
+
 // Contains products infomration
 model Product {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   description String
   imageUrl    String
   name        String
+  title       String
   price       Int
   CartItem    CartItem[]
   Stock       Stock[]
+
+  categoryId String   @db.ObjectId
+  category   Category @relation(fields: [categoryId], references: [id])
 
   // createAt    DateTime @default(now())
   // updateAt    DateTime @updatedAt
