@@ -18,11 +18,10 @@ export default async  function EshopNavbar() {
     const cart = await getCart();
 
     return (
-        <div className={'bg-primary h-20 w-full '}>
-            <div className="navbar w-11/12 m-auto flex-row gap-2 flex justify-between items-center h-full">
+        <div className={'bg-primary w-full mb-4'}>
+            <div className="navbar w-11/12 m-auto flex-row gap-2 flex justify-between items-center h-20">
                 <div className={'text-white'}>
                     <Link href={'/eshop'}>Eshop</Link>
-                    <NavbarEshopLinks />
                 </div>
                 <div className={"flex-none gap-2"}>
                     <form action={searchProducts}>
@@ -33,6 +32,9 @@ export default async  function EshopNavbar() {
                     </form>
                 </div>
                 <ShoppingCartButton cart={cart}/>
+            </div>
+            <div className={"flex justify-center w-full bg-primary"}>
+                <NavbarEshopLinks />
             </div>
         </div>
     )

@@ -1,3 +1,4 @@
+"use server"
 import prisma from "@/app/lib/db/prisma"
 import {cookies} from "@node_modules/next/dist/client/components/headers";
 import {Cart, Prisma} from "@prisma/client";

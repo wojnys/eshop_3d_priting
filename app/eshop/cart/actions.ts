@@ -119,7 +119,7 @@ export async function createOrder(formData: FormData, transportId: string | null
             // Update order
             await prisma.cart.update({
                 where: { id: localCartId },
-                data: { wasOrderCompleted: true, cartPrice: cart?.subtotal }
+                data: { wasOrderCompleted: true, cartPrice: Number(cart?.subtotal) + Number(paymentObject.price) + Number(transportObject.price) }
             })
 
             cookies().delete('localCartId');

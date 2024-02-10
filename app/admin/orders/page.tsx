@@ -8,7 +8,6 @@ import React, {useEffect, useState} from "react";
 import {usePathname, useSearchParams} from 'next/navigation'
 import Link from "next/link";
 import Loading from "@components/Loading";
-import {revalidatePath} from "@node_modules/next/dist/server/web/spec-extension/revalidate-path";
 
 interface Order {
     id: string;
@@ -111,19 +110,19 @@ export default function Page() {
                 loading ? <Loading/> : (
                     <>
                         <h1 className={"text-xl p-5"}>Objednávky</h1>
-                        <div className={"w-full flex justify-center my-5"}>
+                        <div className={"w-full flex justify-center flex-wrap my-5"}>
                             <Link
-                                className={`${searchParams.get('filter') == "all" || searchParams.get('filter') === null ? "bg-gray-600 text-white" : "bg-gray-200 text-black"} inline-block rounded-full px-3 py-1 text-base font-semibold text-gray-700 mr-2 mb-2 ml-2 `}
+                                className={`${searchParams.get('filter') == "all" || searchParams.get('filter') === null ? "bg-gray-600 text-white" : "bg-gray-200 text-black"} inline-block rounded-full px-3 py-1 text-base font-semibold text-gray-700 mr-2 mb-2 ml-2 w-60 text-center `}
                                 href={"/admin/orders?filter=all"}>
                                 Všechny objednávky
                             </Link>
                             <Link
-                                className={`${searchParams.get('filter') == "not-finished" ? "bg-red-600 text-white" : "bg-red-200 text-black"} inline-block rounded-full px-3 py-1 text-base font-semibold text-gray-700 mr-2 mb-2 ml-2 `}
+                                className={`${searchParams.get('filter') == "not-finished" ? "bg-red-600 text-white" : "bg-red-200 text-black"} inline-block rounded-full px-3 py-1 text-base font-semibold text-gray-700 mr-2 mb-2 ml-2 w-60 text-center`}
                                 href={"/admin/orders?filter=not-finished"}>Nevyřízené
                                 objednávky
                             </Link>
                             <Link
-                                className={`${searchParams.get('filter') == "finished" ? "bg-green-600 text-white" : "bg-green-200 text-black"} inline-block rounded-full px-3 py-1 text-base font-semibold text-gray-700 mr-2 mb-2 ml-2`}
+                                className={`${searchParams.get('filter') == "finished" ? "bg-green-600 text-white" : "bg-green-200 text-black"} inline-block rounded-full px-3 py-1 text-base font-semibold text-gray-700 mr-2 mb-2 ml-2 w-60 text-center`}
                                 href={"/admin/orders?filter=finished"}>Dokončené
                                 objednávky
                             </Link>
@@ -166,7 +165,7 @@ export default function Page() {
                                                             <div className={"border-2 border-slate-200 w-full rounded"}
                                                                  key={index}>
                                                                 <div>
-                                                                    <img className="w-32 h-36"
+                                                                    <img className="w-32 h-36 p-1"
                                                                          src={item.product.imageUrl}
                                                                          alt={item.product.name}/>
                                                                 </div>
