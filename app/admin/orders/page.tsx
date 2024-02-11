@@ -20,6 +20,7 @@ interface Order {
         wasOrderPaid: boolean;
         wasOrderDelivered: boolean;
         createAt: Date;
+        generatedOrderId: number;
         items: {
             product: {
                 imageUrl: string;
@@ -70,7 +71,7 @@ export default function Page() {
                 console.log(order.id)
                 // If the item's id matches the specified id, update its value
                 if (order.cart.id === id) {
-                    return { ...order, cart: {...order.cart, wasOrderPaid: true, wasOrderDelivered: true} }; // Use object spread to update properties
+                    return {...order, cart: {...order.cart, wasOrderPaid: true, wasOrderDelivered: true}}; // Use object spread to update properties
                 }
                 return order; // Otherwise, return the item unchanged
             });
@@ -103,13 +104,29 @@ export default function Page() {
         }
     }, [orders, searchParams]);
 
+    const findOrderNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target.value)
+        orders.map((order) => {
+            console.log(order.cart.generatedOrderId)
+        })
+        const filteredOrder = orders.filter(order => order.cart.generatedOrderId.toString().includes((e.target.value)));
+        console.log(filteredOrder)
+        setFilteredOrders(filteredOrder);
+    }
+
 
     return (
         <div className={"p-5"}>
             {
                 loading ? <Loading/> : (
                     <>
-                        <h1 className={"text-xl p-5"}>Objednávky</h1>
+                        <h1 className={"text-xl p-5 text-center w-full"}>Objednávky</h1>
+                        <div className={"flex justify-center w-full"}>
+                            <input type={"text"} placeholder={"Hledat podle čísla objednávky ..."}
+                                   className={"w-3/4 m-auto p-2 border-2 border-slate-200 rounded"} onChange={(e) => {
+                                findOrderNumber(e)
+                            }}/>
+                        </div>
                         <div className={"w-full flex justify-center flex-wrap my-5"}>
                             <Link
                                 className={`${searchParams.get('filter') == "all" || searchParams.get('filter') === null ? "bg-gray-600 text-white" : "bg-gray-200 text-black"} inline-block rounded-full px-3 py-1 text-base font-semibold text-gray-700 mr-2 mb-2 ml-2 w-60 text-center `}
@@ -149,14 +166,18 @@ export default function Page() {
                                             <p>Zaplaceno</p>
                                             <div>{order.cart.wasOrderPaid ? <FaCheck/> : <FaXmark/>}</div>
                                         </span>
-                                                    <span
+                                        <span
                                                         className={`${order.cart.wasOrderDelivered ? "text-green-500" : "text-red-500"} flex items-center gap-3`}>
                                             <p>  Doručeno / Vyzvednuto</p>
                                             <div>{order.cart.wasOrderPaid ? <FaCheck/> : <FaXmark/>}</div>
                                         </span>
-                                                    <span>
+                                       <span>
                                             {convertToPragueTime(order.cart.createAt)}
                                         </span>
+                                        <span
+                                            className="inline-block bg-gray-300 rounded-full p-1 text-sm font-semibold text-gray-700"> Číslo objednávky: {order.cart.generatedOrderId}
+                                        </span>
+
                                                 </div>
 
                                                 <div className={"flex flex-wrap justify-start w-full"}>
