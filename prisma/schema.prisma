@@ -53,6 +53,7 @@ model Stock {
 model Cart {
   id                String     @id @default(auto()) @map("_id") @db.ObjectId
   cartPrice         Int        @default(0) // sum of all products in cart
+  generatedOrderId  Int        @default(1000000) // unique order id (for user to track his order)
   items             CartItem[]
   wasOrderCompleted Boolean    @default(false) // if user completed the order (he creates order and fill all information about delivery and payment)
   wasOrderPaid      Boolean    @default(false) // if user paid for the order

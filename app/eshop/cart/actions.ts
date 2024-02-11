@@ -1,12 +1,16 @@
 "use server"
 
-import {createCart, getCart} from "@app/lib/db/cart";
+import {createCart, getCart, ShoppingCart} from "@app/lib/db/cart";
 import prisma from "@app/lib/db/prisma";
 import {revalidatePath} from "@node_modules/next/dist/server/web/spec-extension/revalidate-path";
 import {getProductStockQuantity} from "@app/lib/db/stock";
 import {cookies} from "@node_modules/next/dist/client/components/headers";
-import {redirect} from "@node_modules/next/dist/client/components/redirect";
 import {validationUserOrderScheme} from "@app/lib/types";
+import {PaymentType, TransportType} from "@prisma/client";
+
+const nodemailer = require('nodemailer');
+import {NextResponse} from 'next/server';
+import {formatPrice} from "@utils/helper";
 
 export async function setProductQuantity(productId: string, quantity: number) {
     const cart = await getCart() ?? await createCart();
@@ -44,7 +48,7 @@ export async function setProductQuantity(productId: string, quantity: number) {
     }
 }
 
-export async function createOrder(formData: FormData, transportId: string | null, paymentId: string | null): Promise<{error?: string[], success?:string}> {
+export async function createOrder(formData: FormData, transportId: string | null, paymentId: string | null): Promise<{ error?: string[], success?: string }> {
 
     const cart = await getCart();
 
@@ -72,21 +76,24 @@ export async function createOrder(formData: FormData, transportId: string | null
 
     // Transaction to create order to mongo DB
     const result = await prisma.$transaction(async prisma => {
-        try{
+        try {
             // Fetch transport object
             const transportObject = await prisma.transportType.findFirst({
-                where: { numberId: Number(transportId) }
+                where: {numberId: Number(transportId)}
             });
 
             // Fetch payment object
             const paymentObject = await prisma.paymentType.findFirst({
-                where: { numberId: Number(paymentId) }
+                where: {numberId: Number(paymentId)}
             });
 
             // Fetch cart object
             const cartObject = await prisma.cart.findFirst({
-                where: { id: localCartId },
+                where: {id: localCartId},
             });
+
+            const cart = await getCart();
+
 
             // Check if all necessary objects exist before creating the user
             if (!transportObject || !paymentObject || !cartObject || !localCartId) {
@@ -116,22 +123,118 @@ export async function createOrder(formData: FormData, transportId: string | null
                 }
             });
 
+
+            // Get last generated order id
+            const newGeneratedOrderId = await prisma.cart.aggregate({
+                _max:{generatedOrderId: true}
+            }).then(result => Number(result._max.generatedOrderId) + 1 ?? 0);
             // Update order
             await prisma.cart.update({
-                where: { id: localCartId },
-                data: { wasOrderCompleted: true, cartPrice: Number(cart?.subtotal) + Number(paymentObject.price) + Number(transportObject.price) }
+                where: {id: localCartId},
+                data: {
+                    wasOrderCompleted: true,
+                    cartPrice: Number(cart?.subtotal) + Number(paymentObject.price) + Number(transportObject.price),
+                    generatedOrderId: newGeneratedOrderId
+                }
             })
 
             cookies().delete('localCartId');
+
+            // send notification email
+            await sendEmail(email, cart, transportObject, paymentObject, newGeneratedOrderId);
+
             return {success: true, transportInfo, user};
-        }catch(error){
+        } catch (error) {
             console.error(error);
-            return {success:false}
+            return {success: false}
         }
     });
-    if(result?.success) {
-        return {success:"Objednávka byla úspěšně vytvořena, zkontrolujte svůj email pro potvrzení objednávky. Děkujeme za nákup!"};
+    if (result?.success) {
+        return {success: "Objednávka byla úspěšně vytvořena, zkontrolujte svůj email pro potvrzení objednávky. Děkujeme za nákup!"};
     } else {
         return {error: ["Bohužel nastala chyba, objednávku nelze vytvořit, obraťte se na podporu. Děkujeme za pochopení!"]};
+    }
+}
+
+export async function sendEmail(email: string | undefined, cartRecap: ShoppingCart | null, transportRecap: TransportType | null, paymentRecap: PaymentType | null, newGeneratedOrderId: number) {
+    const username = process.env.NEXT_PUBLIC_EMAIL_USERNAME;
+    const password = process.env.NEXT_PUBLIC_EMAIL_PASSWORD;
+
+    try {
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.seznam.cz', // Seznam.cz SMTP server
+            port: 465, // Port for secure SMTP
+            secure: true, // Use secure connection (TLS/SSL)
+            auth: {
+                user: username, // Your Seznam.cz email address
+                pass: password, // Your Seznam.cz email password
+            },
+        });
+
+        const mailOptions = {
+            from: username, // Your Seznam.cz email address
+            to: [username, email], // Send email to user and to admin
+            subject: 'Potvrzení objednávky',
+            html: `
+        <h1>Dobrý den, děkujeme za objednávku</h1>
+        <h3>Číslo vaší objednávky: ${newGeneratedOrderId}</h3>
+        <div style="display: flex; justify-content: end; width: 100%; max-width: 350px;">
+            <div style="display: flex; flex-direction: column; width: 100%;">
+                ${
+                cartRecap?.items.map((item, index) => `
+                        <div style="border: 1px solid #ccc; border-radius: 5px; display: flex; align-items: center; margin-bottom: 10px;" key=${index}>
+                            <div style="padding: 5px;">
+                                <img src=${item.product.imageUrl} alt=${item.product.name} width="50" height="50"/>
+                            </div>
+                            <div style="display: flex; flex-direction: column; padding: 5px;">
+                                <div style="display: flex;">
+                                    <p style="margin-right: 5px;">${item.quantity}x</p>
+                                    <p>${item.product.title} ${item.product.name}</p>
+                                </div>
+                                <div>
+                                    <p style="font-weight: bold;">${formatPrice(item.product.price * item.quantity)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')
+            }
+                          <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px; display: flex; flex-direction: column;">
+                                <h1 style="font-size: 16px;">Doprava</h1>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 1;">
+                                        <p>${transportRecap?.name}</p>
+                                    </div>
+                                    <p>${formatPrice(Number(transportRecap?.price))}</p>
+                                </div>
+                            </div>
+                            <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px; display: flex; flex-direction: column;">
+                                <h1 style="font-size: 16px;">Platba</h1>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 1;">
+                                        <p>${paymentRecap?.name}</p>
+                                    </div>
+                                    <p>${formatPrice(Number(paymentRecap?.price))}</p>
+                                </div>
+                            </div>
+                <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px; display: flex; justify-content: space-between;">
+                    <h1 style="font-size: 16px;">Celkem</h1>
+                    <h1 style="font-size: 16px; font-weight: bold;">${formatPrice(Number(cartRecap?.subtotal) + Number(paymentRecap?.price) + Number(transportRecap?.price))}</h1>
+                </div>
+            </div>
+        </div>
+    `
+        };
+
+        await transporter.sendMail(mailOptions, (error: any, info: any) => {
+            if (error) {
+                return error;
+            }
+        });
+
+        return NextResponse.json({message: "Success: email was sent"})
+
+    } catch (error) {
+        console.log(error)
+        NextResponse.json({message: "COULD NOT SEND MESSAGE"})
     }
 }
