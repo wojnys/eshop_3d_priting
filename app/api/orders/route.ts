@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import {NextResponse} from "@node_modules/next/server";
+import getRawBody from "@node_modules/raw-body";
 // @ts-ignore
 const stripe: Stripe | undefined = new Stripe(process.env.NEXT_PRIVATE_API_KEY_STRIPE)
 
@@ -13,7 +14,7 @@ export async function POST(req: any) {
 
         // Platebni brana
 
-        const lineItems = body?.items?.map((item:any) => {
+        const lineItems = body?.items?.map((item: any) => {
             return {
                 price_data: {
                     currency: 'czk',
@@ -45,16 +46,44 @@ export async function POST(req: any) {
 
 
         // Get all admins using Prisma
-        return NextResponse.json({url:session?.url}, {
+        return NextResponse.json({url: session?.url}, {
             status: 200,
         });
     } catch (error) {
         console.log(error)
         return NextResponse.json(
-            { error: error },
+            {error: error},
             {
                 status: 500,
             }
         );
+    }
+}
+
+
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+}
+export const webhook = async (req: any) => {
+    try {
+        const rawBody = await getRawBody(req)
+        const signature = req.headers['stripe-signature']
+        // @ts-ignore
+        const event = stripe.webhooks.constructEvent(rawBody, signature, process.env.NEXT_SECRET_WEBHOOK_STRIPE)
+
+        if (event.type === "checkout.session.completed") {
+
+            const session = event.data.object
+
+            const lineItems = await stripe.checkout.sessions.listLineItems(
+                event.data.object.id
+            )
+            console.log(lineItems)
+
+        }
+    } catch (error) {
+        console.log(error)
     }
 }
