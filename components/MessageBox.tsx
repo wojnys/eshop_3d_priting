@@ -1,19 +1,16 @@
-import React from 'react';
-
 interface MessageBoxProps {
     successStatus: boolean;
-    formMessages: string[];
+    messages: string[];
 }
 
-
-function MessageBox({successStatus, formMessages}: MessageBoxProps) {
+function MessageBox({successStatus, messages}: MessageBoxProps) {
     return (
         <div className={"w-full"}>
             <div
                 className={`${successStatus ? "bg-green-200 border border-green-400 text-green-700" : "bg-red-100 border border-red-400 text-red-700 "} px-4 py-3 rounded relative m-auto my-4`}
                 role="alert">
                            <span className="block sm:inline w-11/12">{
-                               formMessages.map((message, index) => (
+                               messages.map((message, index) => (
                                    <p key={index}>{message}</p>
                                ))
 

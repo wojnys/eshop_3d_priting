@@ -237,7 +237,6 @@ export default function Page() {
                                                         dokončenou </button>
                                                 )
                                             }
-
                                         </div>
                                     </div>
                                 ))

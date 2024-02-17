@@ -11,6 +11,7 @@ import {PaymentType, TransportType} from "@prisma/client";
 const nodemailer = require('nodemailer');
 import {NextResponse} from 'next/server';
 import {formatPrice} from "@utils/helper";
+import {checkout} from "@checkout";
 
 export async function setProductQuantity(productId: string, quantity: number) {
     const cart = await getCart() ?? await createCart();
@@ -48,7 +49,10 @@ export async function setProductQuantity(productId: string, quantity: number) {
     }
 }
 
-export async function createOrder(formData: FormData, transportId: string | null, paymentId: string | null): Promise<{ error?: string[], success?: string }> {
+export async function createOrder(formData: FormData, transportId: string | null, paymentId: string | null): Promise<{
+    error?: string[],
+    success?: string
+}> {
 
     const cart = await getCart();
 
@@ -64,7 +68,15 @@ export async function createOrder(formData: FormData, transportId: string | null
     const localCartId = cookies().get('localCartId')?.value.toString();
 
     // User Form data Validation
-    const validationResult = validationUserOrderScheme.safeParse({firstname, lastname, email, phone, address, city, zip});
+    const validationResult = validationUserOrderScheme.safeParse({
+        firstname,
+        lastname,
+        email,
+        phone,
+        address,
+        city,
+        zip
+    });
     if (!validationResult.success) {
         let errorMessages: string[] = [];
         validationResult.error.issues.forEach(issue => {
@@ -72,6 +84,12 @@ export async function createOrder(formData: FormData, transportId: string | null
         });
 
         return {error: errorMessages};
+    }
+
+    // Check quantity in stock
+    const canUpdate = await canUpdateStockQuantity(cart);
+    if (!canUpdate.canUpdate) {
+        return {error: canUpdate.error};
     }
 
     // Transaction to create order to mongo DB
@@ -91,9 +109,6 @@ export async function createOrder(formData: FormData, transportId: string | null
             const cartObject = await prisma.cart.findFirst({
                 where: {id: localCartId},
             });
-
-            const cart = await getCart();
-
 
             // Check if all necessary objects exist before creating the user
             if (!transportObject || !paymentObject || !cartObject || !localCartId) {
@@ -123,10 +138,9 @@ export async function createOrder(formData: FormData, transportId: string | null
                 }
             });
 
-
             // Get last generated order id
             const newGeneratedOrderId = await prisma.cart.aggregate({
-                _max:{generatedOrderId: true}
+                _max: {generatedOrderId: true}
             }).then(result => Number(result._max.generatedOrderId) + 1 ?? 0);
             // Update order
             await prisma.cart.update({
@@ -140,7 +154,7 @@ export async function createOrder(formData: FormData, transportId: string | null
 
             cookies().delete('localCartId');
 
-            // send notification email
+            // Send notification email
             await sendEmail(email, cart, transportObject, paymentObject, newGeneratedOrderId);
 
             return {success: true, transportInfo, user};
@@ -149,6 +163,7 @@ export async function createOrder(formData: FormData, transportId: string | null
             return {success: false}
         }
     });
+
     if (result?.success) {
         return {success: "Objednávka byla úspěšně vytvořena, zkontrolujte svůj email pro potvrzení objednávky. Děkujeme za nákup!"};
     } else {
@@ -237,4 +252,53 @@ export async function sendEmail(email: string | undefined, cartRecap: ShoppingCa
         console.log(error)
         NextResponse.json({message: "COULD NOT SEND MESSAGE"})
     }
+}
+
+// Check if all items from cart are in stock
+export async function canUpdateStockQuantity(cart: ShoppingCart | null): Promise<{
+    canUpdate: boolean,
+    error?: string[]
+}> {
+    let canUpdate = true;
+    if (cart) {
+        let canUpdate: boolean = true;
+
+        for (const item of cart.items) {
+            const productStockQuantity = await prisma.stock.findFirst({
+                where: {productId: item.productId}
+            });
+
+            if (productStockQuantity?.quantity === undefined || productStockQuantity.quantity < item.quantity) {
+                canUpdate = false;
+                return {
+                    canUpdate: false,
+                    error: ["Je nám líto, ale na skladě nemáme dostatak množství produktu, který jste si vybrali."]
+                };
+            }
+        }
+
+        if (canUpdate) {
+            try {
+                await Promise.all(cart.items.map(async (item) => {
+                    const productStockQuantity = await prisma.stock.findFirst({
+                        where: {productId: item.productId}
+                    });
+                    if (productStockQuantity) {
+                        await prisma.stock.update({
+                            where: {id: productStockQuantity.id},
+                            data: {quantity: productStockQuantity.quantity - item.quantity}
+                        });
+                    }
+                }))
+            } catch (error) {
+                console.error(error);
+                return {
+                    canUpdate: false,
+                    error: ["Je nám líto, ale objednávku momentálně nelze dokončit, zkuste to prosím později. Děkujeme za pochopení!"]
+                };
+            }
+        }
+    }
+
+    return {canUpdate: canUpdate};
 }

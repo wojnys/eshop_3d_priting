@@ -75,13 +75,13 @@ function CartEntry({cartItem: {product, quantity}, setProductQuantity}: CartEntr
 
             <div className={'flex items-center gap-4 justify-between w-52 p-2'}>
                 <div className={'font-bold'}>
-                    Celkem: {formatPrice(product.price * quantity)}
+                    Celkem: {formatPrice(product.price * currentProductQuantity)}
                 </div>
                 <div>
                     <FaWindowClose className={"text-2xl cursor-pointer"} color={"black"} size={"25"} onClick={e => {
                         startTransition(async () => {
                             await setProductQuantity(product.id, 0);
-                            console.log('remove product from cart')
+                            console.log('removed product from cart')
                         })
                     }}/>
                 </div>

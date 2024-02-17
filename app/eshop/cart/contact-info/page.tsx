@@ -6,13 +6,15 @@ import {useSearchParams} from 'next/navigation'
 import {useRouter} from 'next/navigation'
 import {validationUserOrderScheme} from "@app/lib/types";
 import {createOrder} from "@app/eshop/cart/actions";
-import MessageBox from "@app/eshop/cart/MessageBox";
 import {getCart, ShoppingCart} from "@app/lib/db/cart";
-import {Cart, PaymentType, TransportType} from "@prisma/client";
+import {PaymentType, TransportType} from "@prisma/client";
 import {getPaymentTypeByNumber, getTransportTypeByNumber} from "@app/lib/db/general";
 import {formatPrice} from "@utils/helper";
 import {FaMoneyBill, FaTruck} from "@node_modules/react-icons/fa";
 import Loading from "@components/Loading";
+import {checkout} from "@checkout";
+import SweetAlertMessageBox from "@components/Alerts/SweetAlertMessageBox";
+import axios from "@node_modules/axios";
 
 export default function ContactInfo() {
     const router = useRouter()
@@ -51,6 +53,18 @@ export default function ContactInfo() {
                 });
             }
             if (response?.success) {
+                // GATEWAY
+                try{
+                    const { data } = await axios.post('/api/orders', {
+                        items: cartRecap?.items,
+                        shippingInfo: transportRecap,
+                    })
+                    console.log('jus data', data);
+                    window.location.href = data.url
+                }catch(error){
+                    throw error;
+                }
+
                 setFormMessages([response?.success]);
                 setSuccessStatus(true);
             }
@@ -76,10 +90,8 @@ export default function ContactInfo() {
                 if (payment !== null)
                     setPaymentRecap(payment)
 
-                console.log("cart")
-                console.log(cart)
             } catch (error) {
-                console.error(error)
+                throw error;
             } finally {
                 setLoading(false)
             }
@@ -87,7 +99,7 @@ export default function ContactInfo() {
         fetchCart();
     }, []);
 
-    console.log(cartRecap)
+    console.log(paymentRecap)
 
     return (
         <div>
@@ -99,7 +111,7 @@ export default function ContactInfo() {
                     <div className={"p-5 flex flex-wrap flex-col"}>
                         {
                             formMessages.length > 0 && (
-                                <MessageBox successStatus={successStatus} formMessages={formMessages}/>
+                                <SweetAlertMessageBox successStatus={successStatus} messages={formMessages}/>
                             )
                         }
 
@@ -228,11 +240,28 @@ export default function ContactInfo() {
 
                             <div className={"flex w-full justify-start"}>
                                 <Link className={"btn-secondary  flex m-1 "} href={"/eshop/cart"}>Zpět do Košíku</Link>
-                                <button className={"btn-primary flex m-1"} type={"submit"}
-                                        onClick={() => console.log("pico")}>Závazně objednat
+                                <button className={"btn-primary flex m-1"} type={"submit"}>Závazně objednat
                                 </button>
                             </div>
                         </form>
+
+
+                        {/*<button className={"btn-primary flex m-1"} type={"submit"}*/}
+                        {/*        onClick={() => {*/}
+                        {/*            checkout({*/}
+                        {/*                lineItems: [*/}
+                        {/*                    {*/}
+                        {/*                        price: 'price_1Ok0iOGay19qP7zDlF6WsTtP',*/}
+                        {/*                        quantity: 2,*/}
+                        {/*                    },*/}
+                        {/*                    {*/}
+                        {/*                        price: 'price_1Ok2T7Gay19qP7zDMfX96YAC',*/}
+                        {/*                        quantity: 2,*/}
+                        {/*                    }*/}
+                        {/*                ]*/}
+                        {/*            })*/}
+                        {/*        }}>Platebni brana*/}
+                        {/*</button>*/}
 
                     </div>
                 )

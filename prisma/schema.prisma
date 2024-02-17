@@ -26,6 +26,7 @@ model Product {
   name        String
   title       String
   price       Int
+  priceKey    String
   CartItem    CartItem[]
   Stock       Stock[]
 
@@ -125,12 +126,13 @@ model TransportType {
 }
 
 model PaymentType {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  numberId Int
-  name     String
-  company  String
-  price    Int
-  User     User[]
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  numberId       Int
+  name           String
+  company        String
+  paymentGateway Boolean
+  price          Int
+  User           User[]
 
   // createAt    DateTime @default(now())
   // updateAt    DateTime @updatedAt
