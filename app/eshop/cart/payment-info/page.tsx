@@ -43,21 +43,15 @@ export default function PaymentInfo() {
 
                     <ul className="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200 flex flex-col items-start rounded">
                         <li className="flex flex-row-reverse items-center h-5 hover:bg-gray-400 p-5 w-full justify-end border-b-2">
-                            <label className={"text-black p-3"}>Bankovním převodem</label>
-                            <FaBuildingColumns className={"text-red-600 ml-2"} size={"25"} color={"black"}/>
-                            <input id="helper-radio-6" name="payment-type" type="radio" value="1" checked={paymentId === 1}  onClick={() => setPaymentId(1)}
-                                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 "/>
-                        </li>
-                        <li className="flex flex-row-reverse items-center h-5 hover:bg-gray-400 p-5 w-full justify-end border-b-2">
                             <label className={"text-black p-3"}>Platební Brána</label>
                             <FaCcVisa className={"text-red-600 ml-2"} size={"25"}/>
-                            <input id="helper-radio-6" name="payment-type" type="radio" value="2" checked={paymentId === 2}  required={true} onClick={() => setPaymentId(2)}
+                            <input id="helper-radio-6" name="payment-type" type="radio" value="2" checked={paymentId === 1}  required={true} onClick={() => setPaymentId(1)}
                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 "/>
                         </li>
                         <li className="flex flex-row-reverse items-center h-5 hover:bg-gray-400 p-5 w-full justify-end border-b-2">
                             <label className={"text-black p-3"}>Osobně při převzetí - 30 KČ</label>
                             <FaMoneyBill className={"text-red-600 ml-2"} size={"25"}/>
-                            <input id="helper-radio-6" name="payment-type" type="radio" value="3" checked={paymentId === 3}  onClick={() => setPaymentId(3)}
+                            <input id="helper-radio-6" name="payment-type" type="radio" value="3" checked={paymentId === 2}  onClick={() => setPaymentId(2)}
                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 "/>
                         </li>
                     </ul>

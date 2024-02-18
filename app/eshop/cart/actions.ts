@@ -11,7 +11,6 @@ import {PaymentType, TransportType} from "@prisma/client";
 const nodemailer = require('nodemailer');
 import {NextResponse} from 'next/server';
 import {formatPrice} from "@utils/helper";
-import {checkout} from "@checkout";
 
 export async function setProductQuantity(productId: string, quantity: number) {
     const cart = await getCart() ?? await createCart();

@@ -58,8 +58,11 @@ export default function ContactInfo() {
                     const { data } = await axios.post('/api/orders', {
                         items: cartRecap?.items,
                         shippingInfo: transportRecap,
+                        userInfo: {firstname, lastname, email, phone, address, city, zip},
+                        paymentId: paymentId,
+                        transportId: transportId
                     })
-                    console.log('jus data', data);
+                    // console.log('jus data', data);
                     window.location.href = data.url
                 }catch(error){
                     throw error;

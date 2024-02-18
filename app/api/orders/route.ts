@@ -1,6 +1,5 @@
 import Stripe from 'stripe';
 import {NextResponse} from "@node_modules/next/server";
-import getRawBody from "@node_modules/raw-body";
 // @ts-ignore
 const stripe: Stripe | undefined = new Stripe(process.env.NEXT_PRIVATE_API_KEY_STRIPE)
 
@@ -8,9 +7,10 @@ const stripe: Stripe | undefined = new Stripe(process.env.NEXT_PRIVATE_API_KEY_S
 export async function POST(req: any) {
     try {
         const body = await req.json();
-        console.log(body.items)
 
         const shippingInfo = body?.shippingInfo
+
+        const userInfo = body?.userInfo as string
 
         // Platebni brana
 
@@ -21,6 +21,7 @@ export async function POST(req: any) {
                     product_data: {
                         name: item.product.name,
                         images: [item.product.imageUrl],
+                        metadata: {productId: item.product.id, cartId: item.cartId}
                     },
                     unit_amount: item.product.price * 100,
                 },
@@ -32,10 +33,11 @@ export async function POST(req: any) {
         const session = await stripe?.checkout.sessions.create({
             payment_method_types: ['card'],
             mode: 'payment',
-            success_url: `http://localhost:3000/success/orders?order_success=true`,
-            cancel_url: `http://localhost:3000/cancel`,
-            // customer_email: req?.user?.email,
-            // client_reference_id: req?.user?._id,
+            success_url: `${process.env.WEB_URL}/success/orders?order_success=true`,
+            cancel_url: `${process.env.WEB_URL}/eshop`,
+            metadata: {
+                user_info: JSON.stringify(userInfo),
+            },
             shipping_options: [
                 {
                     shipping_rate: "shr_1Okt5bGay19qP7zDOD44n8on"
@@ -57,33 +59,5 @@ export async function POST(req: any) {
                 status: 500,
             }
         );
-    }
-}
-
-
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-}
-export const webhook = async (req: any) => {
-    try {
-        const rawBody = await getRawBody(req)
-        const signature = req.headers['stripe-signature']
-        // @ts-ignore
-        const event = stripe.webhooks.constructEvent(rawBody, signature, process.env.NEXT_SECRET_WEBHOOK_STRIPE)
-
-        if (event.type === "checkout.session.completed") {
-
-            const session = event.data.object
-
-            const lineItems = await stripe.checkout.sessions.listLineItems(
-                event.data.object.id
-            )
-            console.log(lineItems)
-
-        }
-    } catch (error) {
-        console.log(error)
     }
 }
