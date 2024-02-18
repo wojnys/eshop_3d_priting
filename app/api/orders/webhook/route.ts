@@ -1,16 +1,15 @@
-import {cookies} from "@node_modules/next/dist/client/components/headers";
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-}
+// export const config = {
+//     api: {
+//         bodyParser: false,
+//     },
+// }
 
 import Stripe from 'stripe';
 import {headers} from 'next/headers';
 import {NextResponse} from "@node_modules/next/server";
 import prisma from "@app/lib/db/prisma";
-import {getCart} from "@app/lib/db/cart";
+
 
 const stripe = new Stripe(process.env.NEXT_PRIVATE_API_KEY_STRIPE!)
 
