@@ -138,3 +138,8 @@ model PaymentType {
   // updateAt    DateTime @updatedAt
   @@map("paymenttype")
 }
+
+model Orders {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  generatedOrderId Int
+}

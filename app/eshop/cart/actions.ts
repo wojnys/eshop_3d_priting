@@ -164,7 +164,7 @@ export async function createOrder(formData: FormData, transportId: string | null
     });
 
     if (result?.success) {
-        return {success: "Objednávka byla úspěšně vytvořena, zkontrolujte svůj email pro potvrzení objednávky. Děkujeme za nákup!"};
+        return {success: "Vytvoreno"};
     } else {
         return {error: ["Bohužel nastala chyba, objednávku nelze vytvořit, obraťte se na podporu. Děkujeme za pochopení!"]};
     }

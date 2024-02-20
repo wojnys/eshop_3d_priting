@@ -21,11 +21,11 @@ export default function ShoppingCartButton({cart}: ShoppingCartButtonProps) {
         <> <Menu as="div" className="relative inline-block text-left">
             <div>
                 <Menu.Button>
-                    <div className={"indicator flex flex-row "}>
+                    <div className={"indicator flex flex-row hover:text-black text-white"}>
                         <div className={""} onClick={() => {
                             setVisible(true)
                         }}>
-                            <FaShoppingCart className={"text-2xl"} color={"white"} size={"25"}/>
+                            <FaShoppingCart className={"text-2xl"} color={""} size={"25"}/>
                         </div>
                         <span className={'relative bottom-2 rounded-full bg-red-300 w-5 h-5 text-center'}
                               style={{fontSize: "12px", lineHeight: "21px"}}> {cart?.size ?? 0} </span>

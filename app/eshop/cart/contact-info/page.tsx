@@ -12,7 +12,6 @@ import {getPaymentTypeByNumber, getTransportTypeByNumber} from "@app/lib/db/gene
 import {formatPrice} from "@utils/helper";
 import {FaMoneyBill, FaTruck} from "@node_modules/react-icons/fa";
 import Loading from "@components/Loading";
-import {checkout} from "@checkout";
 import SweetAlertMessageBox from "@components/Alerts/SweetAlertMessageBox";
 import axios from "@node_modules/axios";
 
@@ -67,9 +66,6 @@ export default function ContactInfo() {
                 }catch(error){
                     throw error;
                 }
-
-                setFormMessages([response?.success]);
-                setSuccessStatus(true);
             }
         }
     }
@@ -100,10 +96,13 @@ export default function ContactInfo() {
             }
         }
         fetchCart();
+
+        if(searchParams.get("order-was-paid")) {
+            setFormMessages([ 'Objednávka byla úspěšně zaplacena, potvrzení bylo odesláno na váš email' ]);
+            setSuccessStatus(true);
+        }
+
     }, []);
-
-    console.log(paymentRecap)
-
     return (
         <div>
             <InfoNavbar/>

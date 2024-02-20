@@ -1,10 +1,3 @@
-
-// export const config = {
-//     api: {
-//         bodyParser: false,
-//     },
-// }
-
 import Stripe from 'stripe';
 import {headers} from 'next/headers';
 import {NextResponse} from "@node_modules/next/server";
