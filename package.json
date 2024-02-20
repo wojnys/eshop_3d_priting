@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "stripe-listen": "stripe listen --events checkout.session.completed --forward-to localhost:3000/api/orders/webhook",
+    "stripe-listen-web": "stripe listen --events checkout.session.completed --forward-to eshop-3d-priting.vercel.app/api/orders/webhook"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.6",

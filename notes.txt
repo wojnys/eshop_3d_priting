@@ -1,3 +1,4 @@
 1. Udelat model ORDERS - kde budu ukladat objednavky - nikoli ukladat objednavky do modelu cart
-2. Zlepsit ALERT boxy pokud uzivatel uspesne zaplatil a vytvoril objednaku nebo ji po nezaplatitl
-3. Predelat payment and transport pages a taky spojitost s platebni branou
+2. Vyresit stripe listen ....
+3. Zlepsit ALERT boxy pokud uzivatel uspesne zaplatil a vytvoril objednaku nebo ji po nezaplatitl
+4. Predelat payment and transport pages a taky spojitost s platebni branou
