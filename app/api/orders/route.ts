@@ -25,7 +25,7 @@ export async function POST(req: any) {
                     },
                     unit_amount: item.product.price * 100,
                 },
-                tax_rates: ['txr_1OktAyGay19qP7zDMCNjLtrW'],
+                // tax_rates: ['txr_1OktAyGay19qP7zDMCNjLtrW'],
                 quantity: item.quantity
             }
         })
