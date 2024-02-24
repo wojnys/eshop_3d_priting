@@ -14,6 +14,7 @@ import {FaMoneyBill, FaTruck} from "@node_modules/react-icons/fa";
 import Loading from "@components/Loading";
 import SweetAlertMessageBox from "@components/Alerts/SweetAlertMessageBox";
 import axios from "@node_modules/axios";
+import {cookies} from "@node_modules/next/dist/client/components/headers";
 
 export default function ContactInfo() {
     const router = useRouter()

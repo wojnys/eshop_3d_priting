@@ -53,206 +53,52 @@ export async function createOrder(formData: FormData, transportId: string | null
     success?: string
 }> {
 
-    const cart = await getCart();
+    try {
+        const cart = await getCart();
 
-    const firstname = formData.get("firstname")?.toString();
-    const lastname = formData.get("lastname")?.toString();
-    const email = formData.get("email")?.toString();
-    const phone = Number(formData.get("phone") || 0);
+        const firstname = formData.get("firstname")?.toString();
+        const lastname = formData.get("lastname")?.toString();
+        const email = formData.get("email")?.toString();
+        const phone = Number(formData.get("phone") || 0);
 
-    const address = formData.get("address")?.toString();
-    const city = formData.get("city")?.toString();
-    const zip = Number(formData.get("zip") || 0)
+        const address = formData.get("address")?.toString();
+        const city = formData.get("city")?.toString();
+        const zip = Number(formData.get("zip") || 0)
 
-    const localCartId = cookies().get('localCartId')?.value.toString();
+        const localCartId = cookies().get('localCartId')?.value.toString();
 
-    // User Form data Validation
-    const validationResult = validationUserOrderScheme.safeParse({
-        firstname,
-        lastname,
-        email,
-        phone,
-        address,
-        city,
-        zip
-    });
-    if (!validationResult.success) {
-        let errorMessages: string[] = [];
-        validationResult.error.issues.forEach(issue => {
-            errorMessages.push(issue.message);
+        // User Form data Validation
+        const validationResult = validationUserOrderScheme.safeParse({
+            firstname,
+            lastname,
+            email,
+            phone,
+            address,
+            city,
+            zip
         });
-
-        return {error: errorMessages};
-    }
-
-    // Check quantity in stock
-    const canUpdate = await canUpdateStockQuantity(cart);
-    if (!canUpdate.canUpdate) {
-        return {error: canUpdate.error};
-    }
-
-    // Transaction to create order to mongo DB
-    const result = await prisma.$transaction(async prisma => {
-        try {
-            // Fetch transport object
-            const transportObject = await prisma.transportType.findFirst({
-                where: {numberId: Number(transportId)}
+        if (!validationResult.success) {
+            let errorMessages: string[] = [];
+            validationResult.error.issues.forEach(issue => {
+                errorMessages.push(issue.message);
             });
 
-            // Fetch payment object
-            const paymentObject = await prisma.paymentType.findFirst({
-                where: {numberId: Number(paymentId)}
-            });
-
-            // Fetch cart object
-            const cartObject = await prisma.cart.findFirst({
-                where: {id: localCartId},
-            });
-
-            // Check if all necessary objects exist before creating the user
-            if (!transportObject || !paymentObject || !cartObject || !localCartId) {
-                throw new Error('Could not find necessary objects for order creation');
-            }
-
-            // Create transport info
-            const transportInfo = await prisma.transportInfo.create({
-                data: {
-                    address: address ?? "",
-                    city: city ?? "",
-                    zip: zip ?? 0,
-                    transportTypeId: transportObject?.id,
-                },
-            });
-
-            // Create user
-            const user = await prisma.user.create({
-                data: {
-                    firstname: firstname ?? "",
-                    lastname: lastname ?? "",
-                    email: email ?? "",
-                    phone: phone,
-                    cartId: cartObject?.id,
-                    paymentTypeId: paymentObject?.id,
-                    transportInfoId: transportInfo?.id
-                }
-            });
-
-            // Get last generated order id
-            const newGeneratedOrderId = await prisma.cart.aggregate({
-                _max: {generatedOrderId: true}
-            }).then(result => Number(result._max.generatedOrderId) + 1 ?? 0);
-            // Update order
-            await prisma.cart.update({
-                where: {id: localCartId},
-                data: {
-                    wasOrderCompleted: true,
-                    cartPrice: Number(cart?.subtotal) + Number(paymentObject.price) + Number(transportObject.price),
-                    generatedOrderId: newGeneratedOrderId
-                }
-            })
-
-            cookies().delete('localCartId');
-
-            // Send notification email
-            await sendEmail(email, cart, transportObject, paymentObject, newGeneratedOrderId);
-
-            return {success: true, transportInfo, user};
-        } catch (error) {
-            console.error(error);
-            return {success: false}
+            return {error: errorMessages};
         }
-    });
 
-    if (result?.success) {
-        return {success: "Vytvoreno"};
-    } else {
+        // Check quantity in stock
+        const canUpdate = await canUpdateStockQuantity(cart);
+        if (!canUpdate.canUpdate) {
+            return {error: canUpdate.error};
+        }
+        cookies().delete('localCartId');
+        return {success: "Validní data"};
+
+    } catch (error) {
+        console.error(error);
         return {error: ["Bohužel nastala chyba, objednávku nelze vytvořit, obraťte se na podporu. Děkujeme za pochopení!"]};
     }
 }
-
-export async function sendEmail(email: string | undefined, cartRecap: ShoppingCart | null, transportRecap: TransportType | null, paymentRecap: PaymentType | null, newGeneratedOrderId: number) {
-    const username = process.env.NEXT_PUBLIC_EMAIL_USERNAME;
-    const password = process.env.NEXT_PUBLIC_EMAIL_PASSWORD;
-
-    try {
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.seznam.cz', // Seznam.cz SMTP server
-            port: 465, // Port for secure SMTP
-            secure: true, // Use secure connection (TLS/SSL)
-            auth: {
-                user: username, // Your Seznam.cz email address
-                pass: password, // Your Seznam.cz email password
-            },
-        });
-
-        const mailOptions = {
-            from: username, // Your Seznam.cz email address
-            to: [username, email], // Send email to user and to admin
-            subject: 'Potvrzení objednávky',
-            html: `
-        <h1>Dobrý den, děkujeme za objednávku</h1>
-        <h3>Číslo vaší objednávky: ${newGeneratedOrderId}</h3>
-        <div style="display: flex; justify-content: end; width: 100%; max-width: 350px;">
-            <div style="display: flex; flex-direction: column; width: 100%;">
-                ${
-                cartRecap?.items.map((item, index) => `
-                        <div style="border: 1px solid #ccc; border-radius: 5px; display: flex; align-items: center; margin-bottom: 10px;" key=${index}>
-                            <div style="padding: 5px;">
-                                <img src=${item.product.imageUrl} alt=${item.product.name} width="50" height="50"/>
-                            </div>
-                            <div style="display: flex; flex-direction: column; padding: 5px;">
-                                <div style="display: flex;">
-                                    <p style="margin-right: 5px;">${item.quantity}x</p>
-                                    <p>${item.product.title} ${item.product.name}</p>
-                                </div>
-                                <div>
-                                    <p style="font-weight: bold;">${formatPrice(item.product.price * item.quantity)}</p>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')
-            }
-                          <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px; display: flex; flex-direction: column;">
-                                <h1 style="font-size: 16px;">Doprava</h1>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div style="display: flex; align-items: center; gap: 1;">
-                                        <p>${transportRecap?.name}</p>
-                                    </div>
-                                    <p>${formatPrice(Number(transportRecap?.price))}</p>
-                                </div>
-                            </div>
-                            <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px; display: flex; flex-direction: column;">
-                                <h1 style="font-size: 16px;">Platba</h1>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div style="display: flex; align-items: center; gap: 1;">
-                                        <p>${paymentRecap?.name}</p>
-                                    </div>
-                                    <p>${formatPrice(Number(paymentRecap?.price))}</p>
-                                </div>
-                            </div>
-                <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px; display: flex; justify-content: space-between;">
-                    <h1 style="font-size: 16px;">Celkem</h1>
-                    <h1 style="font-size: 16px; font-weight: bold;">${formatPrice(Number(cartRecap?.subtotal) + Number(paymentRecap?.price) + Number(transportRecap?.price))}</h1>
-                </div>
-            </div>
-        </div>
-    `
-        };
-
-        await transporter.sendMail(mailOptions, (error: any, info: any) => {
-            if (error) {
-                return error;
-            }
-        });
-
-        return NextResponse.json({message: "Success: email was sent"})
-
-    } catch (error) {
-        console.log(error)
-        NextResponse.json({message: "COULD NOT SEND MESSAGE"})
-    }
-}
-
 // Check if all items from cart are in stock
 export async function canUpdateStockQuantity(cart: ShoppingCart | null): Promise<{
     canUpdate: boolean,

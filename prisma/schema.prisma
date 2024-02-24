@@ -30,8 +30,9 @@ model Product {
   CartItem    CartItem[]
   Stock       Stock[]
 
-  categoryId String   @db.ObjectId
-  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String      @db.ObjectId
+  category   Category    @relation(fields: [categoryId], references: [id])
+  OrderItem  OrderItem[]
 
   // createAt    DateTime @default(now())
   // updateAt    DateTime @updatedAt
@@ -96,6 +97,8 @@ model User {
 
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
+  order    Order    @relation(fields: [orderId], references: [id])
+  orderId  String   @db.ObjectId
 
   @@map("users")
 }
@@ -139,7 +142,31 @@ model PaymentType {
   @@map("paymenttype")
 }
 
-model Orders {
-  id               String @id @default(auto()) @map("_id") @db.ObjectId
-  generatedOrderId Int
+model Order {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  orderPrice        Int     @default(0) // sum of all products in cart
+  generatedOrderId  Int     @default(1000000) // unique order id (for user to track his order)
+  wasOrderCompleted Boolean @default(false) // if user completed the order (he creates order and fill all information about delivery and payment)
+  wasOrderPaid      Boolean @default(false) // if user paid for the order
+  wasOrderDelivered Boolean @default(false) // if user received the order
+
+  items    OrderItem[]
+  createAt DateTime    @default(now())
+  updateAt DateTime    @updatedAt
+
+  User User[]
+
+  @@map("order")
+}
+
+model OrderItem {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  quantity  Int
+  price     Int
+  orderId   String  @db.ObjectId
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("orderitem")
 }

@@ -9,13 +9,13 @@ import {usePathname, useSearchParams} from 'next/navigation'
 import Link from "next/link";
 import Loading from "@components/Loading";
 
-interface Order {
+type Order = {
     id: string;
     firstname: string;
     lastname: string;
     email: string;
     phone: string;
-    cart: {
+    order: {
         id: string;
         wasOrderPaid: boolean;
         wasOrderDelivered: boolean;
@@ -28,7 +28,7 @@ interface Order {
             };
             quantity: number;
         }[];
-        cartPrice: number;
+        orderPrice: number;
     };
     transportInfo: {
         transportType: {
@@ -46,7 +46,6 @@ export default function Page() {
     const [loading, setLoading] = useState<boolean>(true);
     const [orders, setOrders] = useState<Order[]>([]);
     const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
-    const pathname = usePathname();
     const searchParams = useSearchParams();
 
 
@@ -66,12 +65,12 @@ export default function Page() {
     const markOrderAsFinished = async (id: string) => {
         try {
             console.log(id)
-            const response = await updateOrderStatus(id);
+            await updateOrderStatus(id);
             const updatedValues = orders.map(order => {
                 console.log(order.id)
                 // If the item's id matches the specified id, update its value
-                if (order.cart.id === id) {
-                    return {...order, cart: {...order.cart, wasOrderPaid: true, wasOrderDelivered: true}}; // Use object spread to update properties
+                if (order.order.id === id) {
+                    return {...order, order: {...order.order, wasOrderPaid: true, wasOrderDelivered: true}}; // Use object spread to update properties
                 }
                 return order; // Otherwise, return the item unchanged
             });
@@ -91,12 +90,13 @@ export default function Page() {
         const filter = searchParams.get('filter');
         if (filter === "not-finished") {
             const res = orders.filter(order => {
-                return order.cart && (!order.cart.wasOrderPaid || !order.cart.wasOrderDelivered)
+                return order.order && (!order.order.wasOrderPaid || !order.order.wasOrderDelivered)
+                return order.order && (!order.order.wasOrderPaid || !order.order.wasOrderDelivered)
             });
             setFilteredOrders(res);
         } else if (filter === "finished") {
             const res = orders.filter(order => {
-                return order.cart && order.cart.wasOrderPaid && order.cart.wasOrderDelivered
+                return order.order && order.order.wasOrderPaid && order.order.wasOrderDelivered
             });
             setFilteredOrders(res);
         } else {
@@ -107,9 +107,9 @@ export default function Page() {
     const findOrderNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log(e.target.value)
         orders.map((order) => {
-            console.log(order.cart.generatedOrderId)
+            console.log(order.order.generatedOrderId)
         })
-        const filteredOrder = orders.filter(order => order.cart.generatedOrderId.toString().includes((e.target.value)));
+        const filteredOrder = orders.filter(order => order.order.generatedOrderId.toString().includes((e.target.value)));
         console.log(filteredOrder)
         setFilteredOrders(filteredOrder);
     }
@@ -162,27 +162,27 @@ export default function Page() {
                                             <div className="text-gray-700 text-[18px]">
                                                 <div className={"flex flex-col"}>
                                         <span
-                                            className={`${order.cart.wasOrderPaid ? "text-green-500" : "text-red-500"} flex items-center gap-3`}>
+                                            className={`${order.order.wasOrderPaid ? "text-green-500" : "text-red-500"} flex items-center gap-3`}>
                                             <p>Zaplaceno</p>
-                                            <div>{order.cart.wasOrderPaid ? <FaCheck/> : <FaXmark/>}</div>
+                                            <div>{order.order.wasOrderPaid ? <FaCheck/> : <FaXmark/>}</div>
                                         </span>
                                         <span
-                                                        className={`${order.cart.wasOrderDelivered ? "text-green-500" : "text-red-500"} flex items-center gap-3`}>
+                                                        className={`${order.order.wasOrderDelivered ? "text-green-500" : "text-red-500"} flex items-center gap-3`}>
                                             <p>  Doručeno / Vyzvednuto</p>
-                                            <div>{order.cart.wasOrderPaid ? <FaCheck/> : <FaXmark/>}</div>
+                                            <div>{order.order.wasOrderPaid ? <FaCheck/> : <FaXmark/>}</div>
                                         </span>
                                        <span>
-                                            {convertToPragueTime(order.cart.createAt)}
+                                            {convertToPragueTime(order.order.createAt)}
                                         </span>
                                         <span
-                                            className="inline-block bg-gray-300 rounded-full p-1 text-sm font-semibold text-gray-700"> Číslo objednávky: {order.cart.generatedOrderId}
+                                            className="inline-block bg-gray-300 rounded-full p-1 text-sm font-semibold text-gray-700"> Číslo objednávky: {order.order.generatedOrderId}
                                         </span>
 
                                                 </div>
 
                                                 <div className={"flex flex-wrap justify-start w-full"}>
                                                     {
-                                                        order.cart.items.map((item, index) => (
+                                                        order.order.items.map((item, index) => (
                                                             <div className={"border-2 border-slate-200 w-full rounded"}
                                                                  key={index}>
                                                                 <div>
@@ -226,15 +226,14 @@ export default function Page() {
                                             </div>
 
                                             <span
-                                                className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400 ">{formatPrice(order.cart.cartPrice)}
+                                                className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400 ">{formatPrice(order.order.orderPrice)}
                                              </span>
 
                                             {
-                                                (!order.cart.wasOrderPaid || !order.cart.wasOrderDelivered) && (
+                                                (!order.order.wasOrderPaid || !order.order.wasOrderDelivered) && (
                                                     <button
                                                         className={"bg-green-300 hover:bg-green-500 rounded border-2 border-slate-400"}
-                                                        onClick={() => markOrderAsFinished(order.cart.id)}>Označit jako
-                                                        dokončenou </button>
+                                                        onClick={() => markOrderAsFinished(order.order.id)}>{order.order.id} </button>
                                                 )
                                             }
                                         </div>

@@ -32,6 +32,21 @@ export async function getCart(): Promise <ShoppingCart | null> {
     }
 }
 
+export async function getCartByCartId(cartId: string): Promise <ShoppingCart | null> {
+    const cart =  await prisma.cart.findUnique({
+        where: {id: cartId, wasOrderCompleted: false}, // Only orders which are not completed are possible to change
+        include: {items: {include: {product: true}}}
+    });
+    if (!cart) {
+        return null;
+    }
+    return {
+        ...cart,
+        size: cart.items.reduce((acc, item) => acc + item.quantity, 0),
+        subtotal: cart.items.reduce((acc, item) => acc + item.quantity * item.product.price, 0)
+    }
+}
+
 // Creates new shopping cart
 export async function createCart(): Promise<ShoppingCart> {
     const newCart = await prisma.cart.create({

@@ -1,23 +1,23 @@
 import Stripe from 'stripe';
 import {headers} from 'next/headers';
 import {NextResponse} from "@node_modules/next/server";
-import prisma from "@app/lib/db/prisma";
-
+import {createOrder} from "@app/api/orders/webhook/actions";
+import {cartItem} from "@app/lib/types";
 
 const stripe = new Stripe(process.env.NEXT_PRIVATE_API_KEY_STRIPE!)
 
 async function getCartItems(lineItems: any) {
     return new Promise(async (resolve, reject) => {
         try {
-            let cartItems: any[] = [];
+            let cartItems: cartItem[] = [];
 
             // Map each line item to a Promise that retrieves product details
             const promises = lineItems?.data?.map(async (item: any) => {
                 const product = await stripe.products.retrieve(item.price.product);
                 const productId = product.metadata.productId;
 
-                console.log("product", product);
-                console.log("item", item);
+                // console.log("product", product);
+                // console.log("item", item);
 
                 cartItems.push({
                     productId: productId,
@@ -46,6 +46,8 @@ export async function POST(req: Request) {
     const webhookSecret = process.env.NEXT_SECRET_WEBHOOK_STRIPE!;
     let event: Stripe.Event;
 
+    const metadata = JSON.parse(body).data.object.metadata;
+
     try {
         if (!sig || !webhookSecret) return;
         event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
@@ -55,16 +57,19 @@ export async function POST(req: Request) {
             const lineItems = await stripe.checkout.sessions.listLineItems(
                 event.data.object.id
             )
-            const cartItems:any = await getCartItems(lineItems)
+            const cartItems: any = await getCartItems(lineItems)
             const cartId = cartItems[0].cartId
 
-            await prisma.cart.update({
-                where: {id: cartId},
-                data: {
-                    wasOrderCompleted: true,
-                    wasOrderPaid: true
-                }
-            })
+            try {
+                await createOrder(cartItems, metadata.user_info, cartId,Number(metadata.transport_number_id),Number(metadata.payment_number_id));
+            } catch(error) {
+                return NextResponse.json(
+                    {error: error},
+                    {
+                        status: 500,
+                    }
+                );
+            }
         }
     } catch (err: any) {
         console.log(`❌ Error message: ${err.message}`);

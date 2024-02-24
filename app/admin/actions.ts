@@ -6,7 +6,7 @@ export async function getAllOrders() {
     try {
         const usersWithCarts = await prisma.user.findMany({
             include: {
-                cart: {
+                order: {
                     include: {
                         items: {
                             include: {
@@ -34,11 +34,11 @@ export async function getAllOrders() {
     }
 }
 
-export async function updateOrderStatus(cartId: string) {
+export async function updateOrderStatus(orderId: string) {
     try{
-        await prisma.cart.update({
-            where: { id: cartId },
-            data: { wasOrderPaid: true, wasOrderDelivered: true }
+        await prisma.order.update({
+            where: { id: orderId },
+            data: { wasOrderPaid: true, wasOrderDelivered: true, wasOrderCompleted: true }
         })
         revalidatePath("/admin/orders")
     }catch(error) {

@@ -11,3 +11,22 @@ export const validationUserOrderScheme = z.object({
 })
 
 export type ValidationScheme = z.infer<typeof validationUserOrderScheme>;
+
+export type cartItem = {
+    productId: string,
+    name: string,
+    image: string,
+    price: number,
+    quantity: number,
+    cartId: string
+}
+
+export type userInfo = {
+    firstname: string,
+    lastname:string,
+    email: string,
+    phone:number,
+    address: string,
+    city: string,
+    zip: number
+}
