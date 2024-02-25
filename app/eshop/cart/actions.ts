@@ -9,8 +9,7 @@ import {validationUserOrderScheme} from "@app/lib/types";
 import {PaymentType, TransportType} from "@prisma/client";
 
 const nodemailer = require('nodemailer');
-import {NextResponse} from 'next/server';
-import {formatPrice} from "@utils/helper";
+
 
 export async function setProductQuantity(productId: string, quantity: number) {
     const cart = await getCart() ?? await createCart();
@@ -91,6 +90,8 @@ export async function createOrder(formData: FormData, transportId: string | null
         if (!canUpdate.canUpdate) {
             return {error: canUpdate.error};
         }
+
+        // await createOrder(cart?.items, {} , localCartId,Number(metadata.transport_number_id),Number(metadata.payment_number_id));
         cookies().delete('localCartId');
         return {success: "Validní data"};
 

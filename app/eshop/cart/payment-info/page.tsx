@@ -17,22 +17,15 @@ export default function PaymentInfo() {
                     {/*Doprava*/}
                     <ul className="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200 flex flex-col items-start rounded">
                         <li className="flex flex-row-reverse items-center h-5 hover:bg-gray-400 p-5 w-full justify-end border-b-2">
-                            <label className={"text-black p-3"}>PPL kurýr domů - 79 Kč</label>
-                            <FaVanShuttle className={"text-red-600 ml-2"} size={"25"} color={"black"}/>
-                            <input id="helper-radio-6" name="transport-type" type="radio" value="1" checked={transportId === 1} onClick={() => setTransportId(1)}
-                                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 "/>
-                        </li>
-                        <li className="flex flex-row-reverse items-center h-5 hover:bg-gray-400 p-5 w-full justify-end border-b-2">
-                            <label className={"text-black p-3"}>Osobní odběr na adrese Třinec 123 - <strong
-                                className={"text-green-600"}>Zdarma</strong></label>
-                            <FaShop className={"text-red-600 ml-2"} size={"25"}/>
-                            <input id="helper-radio-6" name="transport-type" type="radio" value="2" checked={transportId === 2} required={true} onClick={() => setTransportId(2)}
-                                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 "/>
-                        </li>
-                        <li className="flex flex-row-reverse items-center h-5 hover:bg-gray-400 p-5 w-full justify-end border-b-2">
-                            <label className={"text-black p-3"}>V neděli majitelem - 69 Kč</label>
+                            <label className={"text-black p-3"}>Zasilkovna 60Kč</label>
                             <FaCarSide className={"text-red-600 ml-2"} size={"25"} color={"black"}/>
-                            <input id="helper-radio-6" name="transport-type" type="radio" value="3" checked={transportId === 3} onClick={() => setTransportId(3)}
+                            <input id="helper-radio-6" name="transport-type" type="radio" value="3" checked={transportId === 1} onClick={() => setTransportId(1)}
+                                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 "/>
+                        </li>
+                        <li className="flex flex-row-reverse items-center h-5 hover:bg-gray-400 p-5 w-full justify-end border-b-2">
+                            <label className={"text-black p-3"}>PPL - 100 Kč</label>
+                            <FaVanShuttle className={"text-red-600 ml-2"} size={"25"} color={"black"}/>
+                            <input id="helper-radio-6" name="transport-type" type="radio" value="1" checked={transportId === 2} onClick={() => setTransportId(2)}
                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 "/>
                         </li>
                     </ul>

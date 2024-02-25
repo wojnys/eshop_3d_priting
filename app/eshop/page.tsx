@@ -13,8 +13,8 @@ export default async function Page({searchParams: {page = "1", category = "all"}
     const pageSize = 6;
 
     const currentCategoryId = await prisma.category.findFirst({
-        where:{
-            type:category
+        where: {
+            type: category
         }
     })
 
@@ -27,7 +27,7 @@ export default async function Page({searchParams: {page = "1", category = "all"}
     const totalPages = Math.ceil(totalItemCount / pageSize);
 
     const products = await prisma.product.findMany({
-        where:{categoryId: currentCategoryId?.id},
+        where: {categoryId: currentCategoryId?.id},
         orderBy: {id: 'desc'},
         skip: (currentPage - 1) * pageSize, // Hwo many items will skip and will not displayed to the user with pagination
         take: pageSize,// How many items will returns

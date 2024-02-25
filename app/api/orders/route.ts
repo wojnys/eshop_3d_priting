@@ -35,8 +35,8 @@ export async function POST(req: any) {
         const session = await stripe?.checkout.sessions.create({
             payment_method_types: ['card'],
             mode: 'payment',
-            success_url: `${process.env.WEB_URL}/eshop?order-was-paid=true&session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.WEB_URL}/eshop`,
+            success_url: `${process.env.WEB_URL}/eshop/cart/contact-info?order-was-paid=true&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.WEB_URL}/eshop/cart/contact-info?order-was-paid=false`,
             metadata: {
                 user_info: JSON.stringify(userInfo),
                 transport_number_id: transportNumberId,

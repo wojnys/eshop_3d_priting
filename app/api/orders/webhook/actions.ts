@@ -81,7 +81,6 @@ export async function createOrder(cartItems: cartItem[], userInfo: string, cartI
                     email: email,
                     phone: phone,
                     orderId: newOrder?.id,
-                    cartId: newOrder?.id,
                     paymentTypeId: paymentObject?.id,
                     transportInfoId: transportInfo?.id,
                 }
@@ -178,53 +177,4 @@ export async function sendEmail(email: string | undefined, cartRecap: ShoppingCa
         console.log(error)
         NextResponse.json({message: "COULD NOT SEND MESSAGE"})
     }
-}
-
-// Check if all items from cart are in stock
-export async function canUpdateStockQuantity(cart: ShoppingCart | null): Promise<{
-    canUpdate: boolean,
-    error?: string[]
-}> {
-    let canUpdate = true;
-    if (cart) {
-        let canUpdate: boolean = true;
-
-        for (const item of cart.items) {
-            const productStockQuantity = await prisma.stock.findFirst({
-                where: {productId: item.productId}
-            });
-
-            if (productStockQuantity?.quantity === undefined || productStockQuantity.quantity < item.quantity) {
-                canUpdate = false;
-                return {
-                    canUpdate: false,
-                    error: ["Je nám líto, ale na skladě nemáme dostatak množství produktu, který jste si vybrali."]
-                };
-            }
-        }
-
-        if (canUpdate) {
-            try {
-                await Promise.all(cart.items.map(async (item) => {
-                    const productStockQuantity = await prisma.stock.findFirst({
-                        where: {productId: item.productId}
-                    });
-                    if (productStockQuantity) {
-                        await prisma.stock.update({
-                            where: {id: productStockQuantity.id},
-                            data: {quantity: productStockQuantity.quantity - item.quantity}
-                        });
-                    }
-                }))
-            } catch (error) {
-                console.error(error);
-                return {
-                    canUpdate: false,
-                    error: ["Je nám líto, ale objednávku momentálně nelze dokončit, zkuste to prosím později. Děkujeme za pochopení!"]
-                };
-            }
-        }
-    }
-
-    return {canUpdate: canUpdate};
 }

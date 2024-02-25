@@ -60,7 +60,6 @@ model Cart {
   wasOrderCompleted Boolean    @default(false) // if user completed the order (he creates order and fill all information about delivery and payment)
   wasOrderPaid      Boolean    @default(false) // if user paid for the order
   wasOrderDelivered Boolean    @default(false) // if user received the order
-  User              User[]
 
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
@@ -88,8 +87,6 @@ model User {
   lastname        String
   email           String
   phone           Int
-  cartId          String        @db.ObjectId
-  cart            Cart          @relation(fields: [cartId], references: [id])
   paymentTypeId   String        @db.ObjectId
   paymentType     PaymentType   @relation(fields: [paymentTypeId], references: [id])
   transportInfoId String        @db.ObjectId

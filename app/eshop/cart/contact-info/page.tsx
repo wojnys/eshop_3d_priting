@@ -54,8 +54,8 @@ export default function ContactInfo() {
             }
             if (response?.success) {
                 // GATEWAY
-                try{
-                    const { data } = await axios.post('/api/orders', {
+                try {
+                    const {data} = await axios.post('/api/orders', {
                         items: cartRecap?.items,
                         shippingInfo: transportRecap,
                         userInfo: {firstname, lastname, email, phone, address, city, zip},
@@ -64,8 +64,9 @@ export default function ContactInfo() {
                     })
                     // console.log('jus data', data);
                     window.location.href = data.url
-                }catch(error){
-                    throw error;
+                } catch (error) {
+                    setFormMessages(["Vaše objednavka není platná, prosím vztvořte novou objednávku"]);
+                    console.error(error)
                 }
             }
         }
@@ -98,9 +99,13 @@ export default function ContactInfo() {
         }
         fetchCart();
 
-        if(searchParams.get("order-was-paid")) {
-            setFormMessages([ 'Objednávka byla úspěšně zaplacena, potvrzení bylo odesláno na váš email' ]);
+        if (searchParams.get("order-was-paid") === "true") {
+            setFormMessages(['Objednávka byla úspěšně zaplacena, potvrzení bylo odesláno na váš email']);
             setSuccessStatus(true);
+        }
+        if (searchParams.get("order-was-paid") === "false") {
+            setFormMessages(['Vaše nebyla zaplacena a proto jsme ji zrušili, prosím vytvořte novou objednávku']);
+            setSuccessStatus(false);
         }
 
     }, []);
@@ -118,153 +123,149 @@ export default function ContactInfo() {
                             )
                         }
 
-                        <form className="" action={handleOrder}>
-                            <div className={"flex flex-wrap"}>
-                                <div className={"max-w-lg sm:mr-[50px]"}>
-                                    <h1 className={"w-full text-lg"}>Kontaktní údaje</h1>
-                                    <div className="flex flex-wrap -mx-3 mb-6">
-                                        <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                            <label>Jméno</label>
-                                            <input type={"text"}
-                                                   className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
-                                                   name={"firstname"} required/>
-                                        </div>
-                                        <div className="w-full md:w-1/2 px-3">
-                                            <label>Příjmení</label>
-                                            <input type={"text"}
-                                                   className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
-                                                   name={"lastname"} required/>
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-wrap -mx-3 mb-6">
-                                        <div className="w-full px-3">
-                                            <label>Email</label>
-                                            <input type={"email"}
-                                                   className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
-                                                   name={"email"} required/>
-                                            <p className="text-gray-600 text-xs italic">Na tento email vám přijde
-                                                potvrzení
-                                                objednávky</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex flex-wrap -mx-3 mb-6">
-                                        <div className="w-full px-3">
-                                            <label>Tel.</label>
-                                            <input type={"number"}
-                                                   className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
-                                                   name={"phone"} required/>
-                                        </div>
-                                    </div>
-                                    <h1 className={"w-full text-lg"}>Údaje pro Dopravce</h1>
-
-                                    <div className="flex flex-wrap -mx-3 mb-6">
-                                        <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                            <label>Adresa</label>
-                                            <input type={"text"}
-                                                   className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
-                                                   name={"address"} required/>
-                                        </div>
-                                        <div className="w-full md:w-1/2 px-3">
-                                            <label>Obec</label>
-                                            <input type={"text"}
-                                                   className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
-                                                   name={"city"} required/>
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-wrap -mx-3 mb-6">
-                                        <div className="w-full px-3">
-                                            <label>PSČ</label>
-                                            <input type={"number"}
-                                                   className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
-                                                   name={"zip"} required/>
-                                            <p className="text-gray-600 text-xs italic">Na tuto adresu doručíme
-                                                požadované
-                                                zboží</p>
-                                        </div>
-                                    </div>
-
+                        {
+                            !cartRecap ? (
+                                <div className={"flex justify-center w-full"}>
+                                    <h1 className={"text-lg"}>Váš košík je prázdný</h1>
                                 </div>
+                            ) : (
+                                <form className="" action={handleOrder}>
+                                    <div className={"flex flex-wrap"}>
+                                        <div className={"max-w-lg sm:mr-[50px]"}>
+                                            <h1 className={"w-full text-lg"}>Kontaktní údaje</h1>
+                                            <div className="flex flex-wrap -mx-3 mb-6">
+                                                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                                    <label>Jméno</label>
+                                                    <input type={"text"}
+                                                           className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
+                                                           name={"firstname"} required/>
+                                                </div>
+                                                <div className="w-full md:w-1/2 px-3">
+                                                    <label>Příjmení</label>
+                                                    <input type={"text"}
+                                                           className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
+                                                           name={"lastname"} required/>
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-wrap -mx-3 mb-6">
+                                                <div className="w-full px-3">
+                                                    <label>Email</label>
+                                                    <input type={"email"}
+                                                           className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
+                                                           name={"email"} required/>
+                                                    <p className="text-gray-600 text-xs italic">Na tento email vám
+                                                        přijde
+                                                        potvrzení
+                                                        objednávky</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-wrap -mx-3 mb-6">
+                                                <div className="w-full px-3">
+                                                    <label>Tel.</label>
+                                                    <input type={"number"}
+                                                           className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
+                                                           name={"phone"} required/>
+                                                </div>
+                                            </div>
+                                            <h1 className={"w-full text-lg"}>Údaje pro Dopravce</h1>
+
+                                            <div className="flex flex-wrap -mx-3 mb-6">
+                                                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                                    <label>Adresa</label>
+                                                    <input type={"text"}
+                                                           className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
+                                                           name={"address"} required/>
+                                                </div>
+                                                <div className="w-full md:w-1/2 px-3">
+                                                    <label>Obec</label>
+                                                    <input type={"text"}
+                                                           className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
+                                                           name={"city"} required/>
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-wrap -mx-3 mb-6">
+                                                <div className="w-full px-3">
+                                                    <label>PSČ</label>
+                                                    <input type={"number"}
+                                                           className={"appearance-none block w-full bg-slate-100 text-gray-700 border border-slate-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"}
+                                                           name={"zip"} required/>
+                                                    <p className="text-gray-600 text-xs italic">Na tuto adresu doručíme
+                                                        požadované
+                                                        zboží</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
 
 
-                                <div className={"flex justify-end w-full sm:w-[350px] "}>
-                                    <div className={"flex flex-col w-full"}>
-                                        {
-                                            cartRecap?.items.map((item, index) => (
-                                                <div className={"border border-slate-300 flex rounded items-center"}
-                                                     key={index}>
-                                                    <div className={"p-2"}>
-                                                        <img src={item.product.imageUrl} alt={item.product.name}
-                                                             width={50}
-                                                             height={50}/>
-                                                    </div>
-                                                    <div className={"flex flex-col p-2"}>
-                                                        <div className={"flex"}>
-                                                            <Link href={`/eshop/product/${item.product.id}`}
-                                                                  className={"hover:underline"}>
-                                                                <p className={"pr-2"}>{item.quantity}x</p>
-                                                                <p>{item.product.title}</p>
-                                                                {item.product.name}
-                                                            </Link>
+                                        <div className={"flex justify-end w-full sm:w-[350px] "}>
+                                            <div className={"flex flex-col w-full"}>
+                                                {
+                                                    cartRecap?.items.map((item, index) => (
+                                                        <div
+                                                            className={"border border-slate-300 flex rounded items-center"}
+                                                            key={index}>
+                                                            <div className={"p-2"}>
+                                                                <img src={item.product.imageUrl} alt={item.product.name}
+                                                                     width={50}
+                                                                     height={50}/>
+                                                            </div>
+                                                            <div className={"flex flex-col p-2"}>
+                                                                <div className={"flex"}>
+                                                                    <Link href={`/eshop/product/${item.product.id}`}
+                                                                          className={"hover:underline"}>
+                                                                        <p className={"pr-2"}>{item.quantity}x</p>
+                                                                        <p>{item.product.title}</p>
+                                                                        {item.product.name}
+                                                                    </Link>
+                                                                </div>
+                                                                <div>
+                                                                    <p className={"text-bold"}>{formatPrice(item.product.price * item.quantity)}</p>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <p className={"text-bold"}>{formatPrice(item.product.price * item.quantity)}</p>
-                                                        </div>
+                                                    ))
+                                                }
+                                                <div className={"border border-slate-300 rounded p-2 flex flex-col"}>
+                                                    <h1 className={"text-base"}>Doprava</h1>
+                                                    <div className={"flex justify-between"}>
+                                                        <div className={"flex items-center gap-1"}><FaTruck size={20}
+                                                                                                            color={"black"}/>
+                                                            <p>{transportRecap?.name} </p></div>
+                                                        <p>{formatPrice(Number(transportRecap?.price))}</p>
                                                     </div>
                                                 </div>
-                                            ))
-                                        }
-                                        <div className={"border border-slate-300 rounded p-2 flex flex-col"}>
-                                            <h1 className={"text-base"}>Doprava</h1>
-                                            <div className={"flex justify-between"}>
-                                                <div className={"flex items-center gap-1"}><FaTruck size={20}
-                                                                                                    color={"black"}/>
-                                                    <p>{transportRecap?.name} </p></div>
-                                                <p>{formatPrice(Number(transportRecap?.price))}</p>
+                                                <div
+                                                    className={"border border-slate-300 flex rounded p-2 flex flex-col"}>
+                                                    <h1 className={"text-base"}>Platba</h1>
+                                                    <div className={"flex justify-between"}>
+                                                        <div className={"flex items-center gap-1"}><FaMoneyBill
+                                                            size={20}
+                                                            color={"black"}/>
+                                                            <p>{paymentRecap?.name} </p></div>
+                                                        <p>{formatPrice(Number(paymentRecap?.price))}</p>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    className={"border border-slate-300 rounded p-2 flex justify-between"}>
+                                                    <h1 className={"text-base"}>Celkem</h1>
+                                                    <h1 className={"text-base font-[2100]"}>{formatPrice(Number(cartRecap?.subtotal) + Number(paymentRecap?.price) + Number(transportRecap?.price))} </h1>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className={"border border-slate-300 flex rounded p-2 flex flex-col"}>
-                                            <h1 className={"text-base"}>Platba</h1>
-                                            <div className={"flex justify-between"}>
-                                                <div className={"flex items-center gap-1"}><FaMoneyBill size={20}
-                                                                                                        color={"black"}/>
-                                                    <p>{paymentRecap?.name} </p></div>
-                                                <p>{formatPrice(Number(paymentRecap?.price))}</p>
-                                            </div>
-                                        </div>
-                                        <div className={"border border-slate-300 rounded p-2 flex justify-between"}>
-                                            <h1 className={"text-base"}>Celkem</h1>
-                                            <h1 className={"text-base font-[2100]"}>{formatPrice(Number(cartRecap?.subtotal) + Number(paymentRecap?.price) + Number(transportRecap?.price))} </h1>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
 
-                            <div className={"flex w-full justify-start"}>
-                                <Link className={"btn-secondary  flex m-1 "} href={"/eshop/cart"}>Zpět do Košíku</Link>
-                                <button className={"btn-primary flex m-1"} type={"submit"}>Závazně objednat
-                                </button>
-                            </div>
-                        </form>
-
-
-                        {/*<button className={"btn-primary flex m-1"} type={"submit"}*/}
-                        {/*        onClick={() => {*/}
-                        {/*            checkout({*/}
-                        {/*                lineItems: [*/}
-                        {/*                    {*/}
-                        {/*                        price: 'price_1Ok0iOGay19qP7zDlF6WsTtP',*/}
-                        {/*                        quantity: 2,*/}
-                        {/*                    },*/}
-                        {/*                    {*/}
-                        {/*                        price: 'price_1Ok2T7Gay19qP7zDMfX96YAC',*/}
-                        {/*                        quantity: 2,*/}
-                        {/*                    }*/}
-                        {/*                ]*/}
-                        {/*            })*/}
-                        {/*        }}>Platebni brana*/}
-                        {/*</button>*/}
+                                    <div className={"flex w-full justify-start"}>
+                                        <Link className={"btn-secondary  flex m-1 "} href={"/eshop/cart"}>Zpět do
+                                            Košíku</Link>
+                                        <button className={"btn-primary flex m-1"} type={"submit"}>Závazně objednat
+                                        </button>
+                                    </div>
+                                </form>
+                            )
+                        }
 
                     </div>
                 )
